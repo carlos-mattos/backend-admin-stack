@@ -28,8 +28,8 @@ export class CreateProcedureDto {
 
   @ApiProperty({
     description:
-      'Preparation time in hours (generic for nutrition, rest, fasting, etc.)',
-    example: 0.5,
+      'Number of days until the next contact (e.g., if the next contact is in 30 days, enter 30)',
+    example: 30,
   })
-  preparationTime: number;
+  nextContactDays: number;
 }

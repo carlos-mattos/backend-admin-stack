@@ -27,8 +27,9 @@ export class CreateDoctorDto {
   proceduresHandled?: string[];
 
   @ApiProperty({
-    description: 'Indicates if the doctor accepts insurance',
-    example: true,
+    description: 'List of insurances accepted by the doctor',
+    type: [String],
+    example: ['Insurance A', 'Insurance B'],
   })
-  acceptsInsurance: boolean;
+  acceptedInsurances: string[];
 }

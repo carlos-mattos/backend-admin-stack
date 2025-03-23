@@ -21,7 +21,7 @@ export class Procedure {
   acceptsInsurance: boolean;
 
   @Prop({ required: true })
-  preparationTime: number;
+  nextContactDays: number;
 }
 
 export const ProcedureSchema = SchemaFactory.createForClass(Procedure);

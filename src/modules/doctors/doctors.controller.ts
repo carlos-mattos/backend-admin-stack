@@ -62,4 +62,14 @@ export class DoctorsController {
   async remove(@Param('id') id: string) {
     return this.doctorsService.remove(id);
   }
+
+  @Get('/insurances/available')
+  @ApiOperation({ summary: 'Retrieve all available insurances' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of available insurances retrieved successfully.',
+  })
+  async getInsurances() {
+    return this.doctorsService.getInsurances();
+  }
 }

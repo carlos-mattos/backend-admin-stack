@@ -6,10 +6,10 @@ export type ScheduleDocument = Schedule & Document;
 @Schema({ timestamps: true })
 export class Schedule {
   @Prop({ required: true })
-  date: Date;
+  startDate: Date;
 
   @Prop({ required: true })
-  time: string;
+  endDate: Date;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Doctor', required: true })
   doctor: string;
@@ -19,6 +19,18 @@ export class Schedule {
 
   @Prop()
   notes?: string;
+
+  @Prop({
+    enum: ['none', 'daily', 'weekly', 'monthly', 'custom'],
+    default: 'none',
+  })
+  recurrence: string;
+
+  @Prop()
+  repeatUntil?: Date;
+
+  @Prop({ type: [String], default: [] })
+  customRecurrenceDays?: string[];
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);

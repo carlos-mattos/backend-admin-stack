@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { SchedulesService } from './schedules.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { Schedule } from './schedule.schema';
+import { SchedulesService } from './schedules.service';
 
 @ApiTags('schedules')
 @Controller('schedules')
@@ -19,11 +19,11 @@ export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new schedule' })
+  @ApiOperation({ summary: 'Create a new schedule with recurrence support' })
   @ApiResponse({
     status: 201,
-    description: 'Schedule created successfully.',
-    type: Schedule,
+    description: 'Schedule(s) created successfully.',
+    type: [Schedule],
   })
   async create(@Body() createScheduleDto: CreateScheduleDto) {
     return this.schedulesService.create(createScheduleDto);

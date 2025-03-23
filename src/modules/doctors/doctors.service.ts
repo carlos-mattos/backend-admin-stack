@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AvailableInsurance } from '../../enum/insurance.enum';
 import { Doctor, DoctorDocument } from './doctor.schema';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
@@ -54,5 +55,9 @@ export class DoctorsService {
       throw new NotFoundException(`Doctor with ID ${id} not found`);
     }
     return deletedDoctor;
+  }
+
+  getInsurances(): string[] {
+    return Object.values(AvailableInsurance);
   }
 }

@@ -27,8 +27,17 @@ export class Doctor {
   })
   proceduresHandled: string[];
 
-  @Prop({ required: true })
-  acceptsInsurance: boolean;
+  @Prop({
+    required: true,
+    type: [String],
+    set: (value: string | string[]): string[] => {
+      if (typeof value === 'string') {
+        return value.split(',').map((item) => item.trim());
+      }
+      return value;
+    },
+  })
+  acceptedInsurances: string[];
 }
 
 export const DoctorSchema = SchemaFactory.createForClass(Doctor);
