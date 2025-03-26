@@ -1,13 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Schedule, ScheduleDocument } from './schedule.schema';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Schedule, ScheduleDocument } from './schedule.schema';
 
 type EventData = Omit<CreateScheduleDto, 'status' | 'recurrence'> & {
   status: string;
   recurrence: string;
+  seriesId: string;
 };
 
 @Injectable()
@@ -25,22 +27,50 @@ export class SchedulesService {
     const startDate = new Date(createScheduleDto.startDate);
     const endDate = new Date(createScheduleDto.endDate);
 
+    const seriesId = uuidv4();
+
     const repeatUntil =
       enforcedRecurrence !== 'none' && createScheduleDto.repeatUntil
         ? new Date(createScheduleDto.repeatUntil)
         : null;
 
-    const eventDuration = endDate.getTime() - startDate.getTime();
-
     if (!repeatUntil) {
-      const createdSchedule = new this.scheduleModel({
+      const singleEvent = new this.scheduleModel({
         ...createScheduleDto,
         status: enforcedStatus,
         recurrence: enforcedRecurrence,
+        seriesId,
       });
-      const savedDoc = await createdSchedule.save();
+      const savedDoc = await singleEvent.save();
       return [savedDoc];
     }
+
+    const buildEvent = (currentDay: Date): EventData => {
+      const newStart = new Date(currentDay);
+      newStart.setHours(
+        startDate.getHours(),
+        startDate.getMinutes(),
+        startDate.getSeconds(),
+        0,
+      );
+
+      const newEnd = new Date(currentDay);
+      newEnd.setHours(
+        endDate.getHours(),
+        endDate.getMinutes(),
+        endDate.getSeconds(),
+        0,
+      );
+
+      return {
+        ...createScheduleDto,
+        status: enforcedStatus,
+        recurrence: enforcedRecurrence,
+        seriesId,
+        startDate: newStart,
+        endDate: newEnd,
+      };
+    };
 
     const events: EventData[] = [];
 
@@ -57,53 +87,33 @@ export class SchedulesService {
         friday: 5,
         saturday: 6,
       };
+
       const customDaysNumbers = createScheduleDto.customRecurrenceDays.map(
         (day) => dayMapping[day.toLowerCase()],
       );
 
-      let currentDate = new Date(startDate);
-      while (currentDate <= repeatUntil) {
-        if (customDaysNumbers.includes(currentDate.getDay())) {
-          const newStart = new Date(currentDate);
-          newStart.setHours(
-            startDate.getHours(),
-            startDate.getMinutes(),
-            startDate.getSeconds(),
-          );
-          const newEnd = new Date(newStart.getTime() + eventDuration);
+      let currentDay = new Date(startDate);
 
-          events.push({
-            ...createScheduleDto,
-            status: enforcedStatus,
-            recurrence: enforcedRecurrence,
-            startDate: newStart,
-            endDate: newEnd,
-          });
+      while (currentDay <= repeatUntil) {
+        if (customDaysNumbers.includes(currentDay.getDay())) {
+          events.push(buildEvent(currentDay));
         }
-        currentDate.setDate(currentDate.getDate() + 1);
+        currentDay.setDate(currentDay.getDate() + 1);
       }
     } else {
-      let currentStart = new Date(startDate);
-      let currentEnd = new Date(endDate);
+      let currentDay = new Date(startDate);
 
-      while (currentStart <= repeatUntil) {
-        events.push({
-          ...createScheduleDto,
-          status: enforcedStatus,
-          recurrence: enforcedRecurrence,
-          startDate: new Date(currentStart),
-          endDate: new Date(currentEnd),
-        });
+      while (currentDay <= repeatUntil) {
+        events.push(buildEvent(currentDay));
 
         if (enforcedRecurrence === 'daily') {
-          currentStart.setDate(currentStart.getDate() + 1);
-          currentEnd.setDate(currentEnd.getDate() + 1);
+          currentDay.setDate(currentDay.getDate() + 1);
         } else if (enforcedRecurrence === 'weekly') {
-          currentStart.setDate(currentStart.getDate() + 7);
-          currentEnd.setDate(currentEnd.getDate() + 7);
+          currentDay.setDate(currentDay.getDate() + 7);
         } else if (enforcedRecurrence === 'monthly') {
-          currentStart.setMonth(currentStart.getMonth() + 1);
-          currentEnd.setMonth(currentEnd.getMonth() + 1);
+          currentDay.setMonth(currentDay.getMonth() + 1);
+        } else {
+          break;
         }
       }
     }
@@ -134,6 +144,7 @@ export class SchedulesService {
       .findByIdAndUpdate(id, updateScheduleDto, { new: true })
       .populate('doctor')
       .exec();
+
     if (!updatedSchedule) {
       throw new NotFoundException(`Schedule with ID ${id} not found`);
     }
@@ -148,5 +159,59 @@ export class SchedulesService {
       throw new NotFoundException(`Schedule with ID ${id} not found`);
     }
     return deletedSchedule;
+  }
+
+  async removeFutureEvents(
+    doctorId: string,
+    scheduleId: string,
+  ): Promise<number> {
+    const baseSchedule = await this.scheduleModel.findById(scheduleId).exec();
+    if (!baseSchedule) {
+      throw new NotFoundException(`Schedule with ID ${scheduleId} not found`);
+    }
+
+    if (String(baseSchedule.doctor) !== doctorId) {
+      throw new NotFoundException(
+        `Schedule with ID ${scheduleId} not found for doctor ${doctorId}`,
+      );
+    }
+
+    const query = {
+      seriesId: baseSchedule.seriesId,
+      doctor: doctorId,
+      startDate: { $gte: baseSchedule.startDate },
+    };
+
+    const result = await this.scheduleModel.deleteMany(query).exec();
+    return result.deletedCount ?? 0;
+  }
+
+  async updateFutureEvents(
+    doctorId: string,
+    scheduleId: string,
+    updateScheduleDto: UpdateScheduleDto,
+  ): Promise<number> {
+    const baseSchedule = await this.scheduleModel.findById(scheduleId).exec();
+    if (!baseSchedule) {
+      throw new NotFoundException(`Schedule with ID ${scheduleId} not found`);
+    }
+
+    if (String(baseSchedule.doctor) !== doctorId) {
+      throw new NotFoundException(
+        `Schedule with ID ${scheduleId} not found for doctor ${doctorId}`,
+      );
+    }
+
+    const query = {
+      seriesId: baseSchedule.seriesId,
+      doctor: doctorId,
+      startDate: { $gte: baseSchedule.startDate },
+    };
+
+    const result = await this.scheduleModel.updateMany(
+      query,
+      updateScheduleDto,
+    );
+    return result.modifiedCount ?? 0;
   }
 }

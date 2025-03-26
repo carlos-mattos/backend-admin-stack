@@ -47,7 +47,7 @@ export class SchedulesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a schedule' })
+  @ApiOperation({ summary: 'Update a single schedule (just this event)' })
   @ApiResponse({ status: 200, description: 'Schedule updated successfully.' })
   async update(
     @Param('id') id: string,
@@ -57,9 +57,41 @@ export class SchedulesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a schedule' })
+  @ApiOperation({ summary: 'Delete a single schedule (just this event)' })
   @ApiResponse({ status: 200, description: 'Schedule deleted successfully.' })
   async remove(@Param('id') id: string) {
     return this.schedulesService.remove(id);
+  }
+
+  @Delete('doctor/:doctorId/future/:scheduleId')
+  @ApiOperation({
+    summary: 'Delete this event and all future events in the same series',
+  })
+  async deleteFutureEvents(
+    @Param('doctorId') doctorId: string,
+    @Param('scheduleId') scheduleId: string,
+  ) {
+    const deletedCount = await this.schedulesService.removeFutureEvents(
+      doctorId,
+      scheduleId,
+    );
+    return { deletedCount };
+  }
+
+  @Patch('doctor/:doctorId/future/:scheduleId')
+  @ApiOperation({
+    summary: 'Update this event and all future events in the same series',
+  })
+  async updateFutureEvents(
+    @Param('doctorId') doctorId: string,
+    @Param('scheduleId') scheduleId: string,
+    @Body() updateScheduleDto: UpdateScheduleDto,
+  ) {
+    const updatedCount = await this.schedulesService.updateFutureEvents(
+      doctorId,
+      scheduleId,
+      updateScheduleDto,
+    );
+    return { updatedCount };
   }
 }

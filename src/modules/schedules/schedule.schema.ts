@@ -31,6 +31,9 @@ export class Schedule {
 
   @Prop({ type: [String], default: [] })
   customRecurrenceDays?: string[];
+
+  @Prop()
+  seriesId?: string;
 }
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);
