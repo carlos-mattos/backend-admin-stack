@@ -4,7 +4,7 @@ services:
     image: mongo:latest
     restart: always
     environment:
-      MONGO_INITDB_DATABASE: clinic
+      MONGO_INITDB_DATABASE: admin
     ports:
       - "27017:27017"
     volumes:
@@ -13,7 +13,7 @@ services:
     build: .
     restart: always
     environment:
-      MONGO_URI: mongodb://mongo:27017/clinic
+      MONGO_URI: mongodb://mongo:27017/admin
     ports:
       - "3000:3000"
     depends_on:

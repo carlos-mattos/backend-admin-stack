@@ -6,8 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { Schedule } from './schedule.schema';
@@ -39,6 +40,42 @@ export class SchedulesController {
     return this.schedulesService.findAll();
   }
 
+  @Get('professional/:professionalId')
+  @ApiOperation({ summary: 'Get schedules by professional' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all schedules for the specified professional.',
+    type: [Schedule],
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['scheduled', 'cancelled', 'completed'],
+    description: 'Filter schedules by status',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    description: 'Filter schedules starting from this date (YYYY-MM-DD)',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    description: 'Filter schedules ending before this date (YYYY-MM-DD)',
+  })
+  async findByProfessional(
+    @Param('professionalId') professionalId: string,
+    @Query('status') status?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.schedulesService.findByProfessional(professionalId, {
+      status,
+      startDate,
+      endDate,
+    });
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Retrieve a schedule by ID' })
   @ApiResponse({ status: 200, description: 'Schedule retrieved successfully.' })
@@ -46,52 +83,42 @@ export class SchedulesController {
     return this.schedulesService.findOne(id);
   }
 
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a schedule and all future events in the same series' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Schedule and all future events in the series deleted successfully.' 
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Schedule not found'
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Cannot delete schedule with existing appointments'
+  })
+  async remove(@Param('id') id: string) {
+    return this.schedulesService.remove(id);
+  }
+
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a single schedule (just this event)' })
-  @ApiResponse({ status: 200, description: 'Schedule updated successfully.' })
+  @ApiOperation({ summary: 'Update a schedule and all future events in the same series' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Schedule and all future events in the series updated successfully.' 
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Schedule not found'
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Cannot update schedule with existing appointments'
+  })
   async update(
     @Param('id') id: string,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
     return this.schedulesService.update(id, updateScheduleDto);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a single schedule (just this event)' })
-  @ApiResponse({ status: 200, description: 'Schedule deleted successfully.' })
-  async remove(@Param('id') id: string) {
-    return this.schedulesService.remove(id);
-  }
-
-  @Delete('doctor/:doctorId/future/:scheduleId')
-  @ApiOperation({
-    summary: 'Delete this event and all future events in the same series',
-  })
-  async deleteFutureEvents(
-    @Param('doctorId') doctorId: string,
-    @Param('scheduleId') scheduleId: string,
-  ) {
-    const deletedCount = await this.schedulesService.removeFutureEvents(
-      doctorId,
-      scheduleId,
-    );
-    return { deletedCount };
-  }
-
-  @Patch('doctor/:doctorId/future/:scheduleId')
-  @ApiOperation({
-    summary: 'Update this event and all future events in the same series',
-  })
-  async updateFutureEvents(
-    @Param('doctorId') doctorId: string,
-    @Param('scheduleId') scheduleId: string,
-    @Body() updateScheduleDto: UpdateScheduleDto,
-  ) {
-    const updatedCount = await this.schedulesService.updateFutureEvents(
-      doctorId,
-      scheduleId,
-      updateScheduleDto,
-    );
-    return { updatedCount };
   }
 }

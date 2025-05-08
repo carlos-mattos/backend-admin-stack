@@ -1,27 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateProcedureDto {
+export class CreateServiceDto {
   @ApiProperty({
-    description: 'Name of the procedure',
+    description: 'Name of the Service',
     example: 'Teeth Whitening',
   })
-  procedureName: string;
+  name: string;
 
-  @ApiProperty({ description: 'Category of the procedure', example: 'Dental' })
+  @ApiProperty({ description: 'Category of the Service', example: 'Dental' })
   category: string;
 
   @ApiProperty({
     description:
-      'Duration of the procedure in hours (represents the time the procedure takes)',
+      'Duration of the Service in hours (represents the time the Service takes)',
     example: 1.5,
   })
   duration: number;
 
-  @ApiProperty({ description: 'Price of the procedure in R$', example: 150.0 })
+  @ApiProperty({ description: 'Price of the Service in R$', example: 150.0 })
   price: number;
 
   @ApiProperty({
-    description: 'Indicates if the procedure is covered by insurance',
+    description: 'Indicates if the Service is covered by insurance',
     example: true,
   })
   acceptsInsurance: boolean;

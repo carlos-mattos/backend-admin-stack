@@ -1,27 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type PatientDocument = Patient & Document;
+export type ServiceDocument = Service & Document;
 
 @Schema({ timestamps: true })
-export class Patient {
+export class Service {
   @Prop({ required: true })
-  fullName: string;
+  name: string;
 
   @Prop({ required: true })
-  address: string;
+  category: string;
 
   @Prop({ required: true })
-  documents: string;
+  duration: number;
 
   @Prop({ required: true })
-  phone: string;
-
-  @Prop()
-  email?: string;
+  price: number;
 
   @Prop({ required: true })
-  communicationConsent: boolean;
+  nextContactDays: number;
 }
 
-export const PatientSchema = SchemaFactory.createForClass(Patient);
+export const ServiceSchema = SchemaFactory.createForClass(Service);

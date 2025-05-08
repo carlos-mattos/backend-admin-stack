@@ -11,13 +11,25 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { ConfirmAppointmentDto } from './dto/confirm-appointment.dto';
+import { UpdateAppointmentStatusDto } from './dto/confirm-appointment.dto';
 import { Appointment } from './appointment.schema';
+import { CheckAvailabilityDto } from './dto/check-availability.dto';
+import { CheckAvailabilityResponse } from './interfaces/check-availability.interface';
 
 @ApiTags('appointments')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get all appointments' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all appointments retrieved successfully.',
+  })
+  async findAll() {
+    return this.appointmentsService.findAll();
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a new appointment' })
@@ -30,24 +42,14 @@ export class AppointmentsController {
     return this.appointmentsService.create(createAppointmentDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Retrieve all appointments' })
+  @Get('professional/:professionalId')
+  @ApiOperation({ summary: 'Get all appointments for a professional' })
   @ApiResponse({
     status: 200,
     description: 'List of appointments retrieved successfully.',
   })
-  async findAll() {
-    return this.appointmentsService.findAll();
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Retrieve an appointment by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Appointment retrieved successfully.',
-  })
-  async findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(id);
+  async findByProfessional(@Param('professionalId') professionalId: string) {
+    return this.appointmentsService.findByProfessional(professionalId);
   }
 
   @Patch(':id')
@@ -73,16 +75,66 @@ export class AppointmentsController {
     return this.appointmentsService.remove(id);
   }
 
-  @Patch(':id/confirm')
-  @ApiOperation({ summary: 'Confirm an appointment' })
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Update appointment status' })
   @ApiResponse({
     status: 200,
-    description: 'Appointment confirmed successfully.',
+    description: 'Appointment status updated successfully.',
   })
-  async confirm(
+  async updateStatus(
     @Param('id') id: string,
-    @Body() confirmAppointmentDto: ConfirmAppointmentDto,
+    @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
   ) {
-    return this.appointmentsService.confirm(id, confirmAppointmentDto);
+    return this.appointmentsService.updateStatus(
+      id,
+      updateAppointmentStatusDto,
+    );
+  }
+
+  @Post('check-availability')
+  @ApiOperation({ summary: 'Check appointment availability' })
+  @ApiResponse({
+    status: 200,
+    description: 'Availability check completed successfully',
+    schema: {
+      properties: {
+        available: {
+          type: 'boolean',
+          description: 'Whether the time slot is available',
+        },
+        conflicts: {
+          type: 'object',
+          properties: {
+            appointments: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: { type: 'string' },
+                  startDate: { type: 'string' },
+                  startTime: { type: 'string' },
+                  endDate: { type: 'string' },
+                  endTime: { type: 'string' },
+                  status: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid time range or professional is not active',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Professional not found',
+  })
+  async checkAvailability(
+    @Body() checkAvailabilityDto: CheckAvailabilityDto,
+  ): Promise<CheckAvailabilityResponse> {
+    return this.appointmentsService.checkAvailability(checkAvailabilityDto);
   }
 }

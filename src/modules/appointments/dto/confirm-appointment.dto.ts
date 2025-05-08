@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ConfirmAppointmentDto {
+export class UpdateAppointmentStatusDto {
   @ApiProperty({
-    description: 'Confirmation status of the appointment',
-    example: true,
+    description: 'Status of the appointment',
+    enum: ['Agendado', 'Pré-agendado', 'Cancelado'],
+    example: 'Agendado',
   })
-  confirmed: boolean;
+  status: string;
 }

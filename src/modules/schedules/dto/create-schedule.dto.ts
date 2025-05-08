@@ -1,54 +1,92 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsDate,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsString,
+  IsTimeZone,
+} from 'class-validator';
+import { ScheduleStatus, RecurrenceType } from '../schedule.schema';
 
 export class CreateScheduleDto {
   @ApiProperty({
-    description: 'Start date and time of the schedule',
-    example: '2025-04-01T09:00:00Z',
+    description: 'Professional ID',
+    example: '507f1f77bcf86cd799439011',
   })
+  @IsMongoId()
+  professional: string;
+
+  @ApiProperty({
+    description: 'Start date of the schedule',
+    example: '2024-03-20T09:00:00Z',
+  })
+  @IsDate()
   startDate: Date;
 
   @ApiProperty({
-    description: 'End date and time of the schedule',
-    example: '2025-04-01T10:00:00Z',
+    description: 'End date of the schedule',
+    example: '2024-03-20T17:00:00Z',
   })
+  @IsDate()
   endDate: Date;
 
   @ApiProperty({
-    description: 'ID of the doctor associated with the schedule',
-    example: '603d2149fc13ae1f2b000001',
+    description: 'Start time in HH:mm format',
+    example: '09:00',
   })
-  doctor: string;
+  @IsString()
+  startTime: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
+    description: 'End time in HH:mm format',
+    example: '17:00',
+  })
+  @IsString()
+  endTime: string;
+
+  @ApiProperty({
+    description: 'Timezone of the schedule',
+    example: 'America/Sao_Paulo',
+  })
+  @IsTimeZone()
+  timezone: string;
+
+  @ApiProperty({
     description: 'Status of the schedule',
-    example: 'scheduled',
+    enum: ScheduleStatus,
+    example: ScheduleStatus.SCHEDULED,
+    required: false,
   })
-  status?: string;
+  @IsOptional()
+  @IsEnum(ScheduleStatus)
+  status?: ScheduleStatus;
 
-  @ApiPropertyOptional({
-    description: 'Additional notes for the schedule',
-    example: 'Patient requires fasting',
+  @ApiProperty({
+    description: 'Recurrence type',
+    enum: RecurrenceType,
+    example: RecurrenceType.NONE,
+    required: false,
   })
-  notes?: string;
+  @IsOptional()
+  @IsEnum(RecurrenceType)
+  recurrence?: RecurrenceType;
 
-  @ApiPropertyOptional({
-    description: 'Recurrence pattern for the schedule',
-    enum: ['none', 'daily', 'weekly', 'monthly', 'custom'],
-    default: 'none',
+  @ApiProperty({
+    description: 'Date until which the schedule repeats',
+    example: '2024-12-31T23:59:59Z',
+    required: false,
   })
-  recurrence?: string;
-
-  @ApiPropertyOptional({
-    description: 'Date until which the schedule should repeat',
-    example: '2025-05-01T00:00:00Z',
-  })
+  @IsOptional()
+  @IsDate()
   repeatUntil?: Date;
 
-  @ApiPropertyOptional({
-    description:
-      'Days of the week for custom recurrence (only if recurrence is "custom")',
-    type: [String],
-    example: ['Monday', 'Wednesday', 'Friday'],
+  @ApiProperty({
+    description: 'Custom recurrence days',
+    example: ['monday', 'wednesday', 'friday'],
+    required: false,
   })
+  @IsOptional()
+  @IsString({ each: true })
   customRecurrenceDays?: string[];
 }

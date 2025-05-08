@@ -1,0 +1,1494 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/customers": {
+      "post": {
+        "operationId": "CustomersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new customer",
+        "tags": [
+          "customers"
+        ]
+      },
+      "get": {
+        "operationId": "CustomersController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of customers retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve all customers",
+        "tags": [
+          "customers"
+        ]
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "operationId": "CustomersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve a customer by ID",
+        "tags": [
+          "customers"
+        ]
+      },
+      "patch": {
+        "operationId": "CustomersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an existing customer",
+        "tags": [
+          "customers"
+        ]
+      },
+      "delete": {
+        "operationId": "CustomersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a customer by ID",
+        "tags": [
+          "customers"
+        ]
+      }
+    },
+    "/professionals": {
+      "post": {
+        "operationId": "ProfessionalsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfessionalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Professional created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professional"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new professional",
+        "tags": [
+          "professionals"
+        ]
+      },
+      "get": {
+        "operationId": "ProfessionalsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of professionals retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Professional"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve all professionals",
+        "tags": [
+          "professionals"
+        ]
+      }
+    },
+    "/professionals/{id}": {
+      "get": {
+        "operationId": "ProfessionalsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Professional retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professional"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve a professional by ID",
+        "tags": [
+          "professionals"
+        ]
+      },
+      "patch": {
+        "operationId": "ProfessionalsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfessionalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Professional updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professional"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an existing professional",
+        "tags": [
+          "professionals"
+        ]
+      },
+      "delete": {
+        "operationId": "ProfessionalsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Professional deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professional"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a professional by ID",
+        "tags": [
+          "professionals"
+        ]
+      }
+    },
+    "/professionals/{id}/services": {
+      "get": {
+        "operationId": "ProfessionalsController_getServicesByProfessionalId",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of services provided by the professional retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Service"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve all services provided by a professional",
+        "tags": [
+          "professionals"
+        ]
+      }
+    },
+    "/services": {
+      "post": {
+        "operationId": "ServicesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Service created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new service",
+        "tags": [
+          "services"
+        ]
+      },
+      "get": {
+        "operationId": "ServicesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of services retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Service"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve all services",
+        "tags": [
+          "services"
+        ]
+      }
+    },
+    "/services/{id}": {
+      "get": {
+        "operationId": "ServicesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Retrieve a service by ID",
+        "tags": [
+          "services"
+        ]
+      },
+      "patch": {
+        "operationId": "ServicesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Service updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Update an existing service",
+        "tags": [
+          "services"
+        ]
+      },
+      "delete": {
+        "operationId": "ServicesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Service"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete a service",
+        "tags": [
+          "services"
+        ]
+      }
+    },
+    "/schedules": {
+      "post": {
+        "operationId": "SchedulesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Schedule(s) created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Schedule"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new schedule with recurrence support",
+        "tags": [
+          "schedules"
+        ]
+      },
+      "get": {
+        "operationId": "SchedulesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of schedules retrieved successfully."
+          }
+        },
+        "summary": "Retrieve all schedules",
+        "tags": [
+          "schedules"
+        ]
+      }
+    },
+    "/schedules/professional/{professionalId}": {
+      "get": {
+        "operationId": "SchedulesController_findByProfessional",
+        "parameters": [
+          {
+            "name": "professionalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter schedules by status",
+            "schema": {
+              "enum": [
+                "scheduled",
+                "cancelled",
+                "completed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter schedules starting from this date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "Filter schedules ending before this date (YYYY-MM-DD)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all schedules for the specified professional.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Schedule"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get schedules by professional",
+        "tags": [
+          "schedules"
+        ]
+      }
+    },
+    "/schedules/{id}": {
+      "get": {
+        "operationId": "SchedulesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule retrieved successfully."
+          }
+        },
+        "summary": "Retrieve a schedule by ID",
+        "tags": [
+          "schedules"
+        ]
+      },
+      "delete": {
+        "operationId": "SchedulesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Schedule and all future events in the series deleted successfully."
+          },
+          "404": {
+            "description": "Schedule not found"
+          },
+          "409": {
+            "description": "Cannot delete schedule with existing appointments"
+          }
+        },
+        "summary": "Delete a schedule and all future events in the same series",
+        "tags": [
+          "schedules"
+        ]
+      },
+      "patch": {
+        "operationId": "SchedulesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateScheduleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Schedule and all future events in the series updated successfully."
+          },
+          "404": {
+            "description": "Schedule not found"
+          },
+          "409": {
+            "description": "Cannot update schedule with existing appointments"
+          }
+        },
+        "summary": "Update a schedule and all future events in the same series",
+        "tags": [
+          "schedules"
+        ]
+      }
+    },
+    "/appointments": {
+      "get": {
+        "operationId": "AppointmentsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all appointments retrieved successfully."
+          }
+        },
+        "summary": "Get all appointments",
+        "tags": [
+          "appointments"
+        ]
+      },
+      "post": {
+        "operationId": "AppointmentsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Appointment created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appointment"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new appointment",
+        "tags": [
+          "appointments"
+        ]
+      }
+    },
+    "/appointments/professional/{professionalId}": {
+      "get": {
+        "operationId": "AppointmentsController_findByProfessional",
+        "parameters": [
+          {
+            "name": "professionalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of appointments retrieved successfully."
+          }
+        },
+        "summary": "Get all appointments for a professional",
+        "tags": [
+          "appointments"
+        ]
+      }
+    },
+    "/appointments/{id}": {
+      "patch": {
+        "operationId": "AppointmentsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppointmentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Appointment updated successfully."
+          }
+        },
+        "summary": "Update an appointment",
+        "tags": [
+          "appointments"
+        ]
+      },
+      "delete": {
+        "operationId": "AppointmentsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appointment deleted successfully."
+          }
+        },
+        "summary": "Delete an appointment",
+        "tags": [
+          "appointments"
+        ]
+      }
+    },
+    "/appointments/{id}/status": {
+      "patch": {
+        "operationId": "AppointmentsController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppointmentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Appointment status updated successfully."
+          }
+        },
+        "summary": "Update appointment status",
+        "tags": [
+          "appointments"
+        ]
+      }
+    },
+    "/appointments/check-availability": {
+      "post": {
+        "operationId": "AppointmentsController_checkAvailability",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckAvailabilityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Availability check completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "available": {
+                      "type": "boolean",
+                      "description": "Whether the time slot is available"
+                    },
+                    "conflicts": {
+                      "type": "object",
+                      "properties": {
+                        "appointments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string"
+                              },
+                              "startDate": {
+                                "type": "string"
+                              },
+                              "startTime": {
+                                "type": "string"
+                              },
+                              "endDate": {
+                                "type": "string"
+                              },
+                              "endTime": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid time range or professional is not active"
+          },
+          "404": {
+            "description": "Professional not found"
+          }
+        },
+        "summary": "Check appointment availability",
+        "tags": [
+          "appointments"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Backend Admin",
+    "description": "",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "CreateCustomerDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "Full name of the Customer",
+            "example": "John Doe"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address of the Customer",
+            "example": "123 Main St, City, Country"
+          },
+          "documents": {
+            "type": "string",
+            "description": "Customer documents (e.g., ID, insurance)",
+            "example": "123456789"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Customer phone number",
+            "example": "+1234567890"
+          },
+          "email": {
+            "type": "string",
+            "description": "Customer email address",
+            "example": "john.doe@example.com"
+          },
+          "communicationConsent": {
+            "type": "boolean",
+            "description": "Consent for communication according to LGPD",
+            "example": true
+          }
+        },
+        "required": [
+          "fullName",
+          "address",
+          "documents",
+          "phone",
+          "communicationConsent"
+        ]
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateCustomerDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateProfessionalDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "Full name of the Professional",
+            "example": "Dr. John Doe"
+          },
+          "crm": {
+            "type": "string",
+            "description": "CRM of the Professional",
+            "example": "123456"
+          },
+          "contact": {
+            "type": "string",
+            "description": "Contact information",
+            "example": "+1234567890"
+          },
+          "documents": {
+            "type": "string",
+            "description": "Documents related to the Professional",
+            "example": "Document details"
+          },
+          "serviceHandled": {
+            "description": "List of service IDs handled by the Professional",
+            "example": [
+              "603d2149fc13ae1f2b000001",
+              "603d2149fc13ae1f2b000002"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "acceptedInsurances": {
+            "description": "List of insurances accepted by the Professional",
+            "example": [
+              "Insurance A",
+              "Insurance B"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "fullName",
+          "crm",
+          "contact",
+          "documents",
+          "acceptedInsurances"
+        ]
+      },
+      "Professional": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateProfessionalDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "Service": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateServiceDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the Service",
+            "example": "Teeth Whitening"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the Service",
+            "example": "Dental"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration of the Service in hours (represents the time the Service takes)",
+            "example": 1.5
+          },
+          "price": {
+            "type": "number",
+            "description": "Price of the Service in R$",
+            "example": 150
+          },
+          "acceptsInsurance": {
+            "type": "boolean",
+            "description": "Indicates if the Service is covered by insurance",
+            "example": true
+          },
+          "nextContactDays": {
+            "type": "number",
+            "description": "Number of days until the next contact (e.g., if the next contact is in 30 days, enter 30)",
+            "example": 30
+          }
+        },
+        "required": [
+          "name",
+          "category",
+          "duration",
+          "price",
+          "acceptsInsurance",
+          "nextContactDays"
+        ]
+      },
+      "UpdateServiceDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "professional": {
+            "type": "string",
+            "description": "Professional ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Start date of the schedule",
+            "example": "2024-03-20T09:00:00Z"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "End date of the schedule",
+            "example": "2024-03-20T17:00:00Z"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time in HH:mm format",
+            "example": "09:00"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time in HH:mm format",
+            "example": "17:00"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the schedule",
+            "example": "America/Sao_Paulo"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the schedule",
+            "enum": [
+              "scheduled",
+              "cancelled",
+              "completed"
+            ],
+            "example": "scheduled"
+          },
+          "recurrence": {
+            "type": "string",
+            "description": "Recurrence type",
+            "enum": [
+              "none",
+              "daily",
+              "weekly",
+              "monthly",
+              "custom"
+            ],
+            "example": "none"
+          },
+          "repeatUntil": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date until which the schedule repeats",
+            "example": "2024-12-31T23:59:59Z"
+          },
+          "customRecurrenceDays": {
+            "description": "Custom recurrence days",
+            "example": [
+              "monday",
+              "wednesday",
+              "friday"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "professional",
+          "startDate",
+          "endDate",
+          "startTime",
+          "endTime",
+          "timezone"
+        ]
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {}
+      },
+      "Schedule": {
+        "type": "object",
+        "properties": {
+          "professional": {
+            "description": "Professional ID",
+            "example": "507f1f77bcf86cd799439011",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Start date of the schedule",
+            "example": "2024-03-20T09:00:00Z"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "End date of the schedule",
+            "example": "2024-03-20T17:00:00Z"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time in HH:mm format",
+            "example": "09:00"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time in HH:mm format",
+            "example": "17:00"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the schedule",
+            "example": "America/Sao_Paulo"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the schedule",
+            "enum": [
+              "scheduled",
+              "cancelled",
+              "completed"
+            ],
+            "example": "scheduled"
+          },
+          "recurrence": {
+            "type": "string",
+            "description": "Recurrence type",
+            "enum": [
+              "none",
+              "daily",
+              "weekly",
+              "monthly",
+              "custom"
+            ],
+            "example": "none"
+          },
+          "repeatUntil": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date until which the schedule repeats",
+            "example": "2024-12-31T23:59:59Z"
+          },
+          "customRecurrenceDays": {
+            "description": "Custom recurrence days",
+            "example": [
+              "monday",
+              "wednesday",
+              "friday"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "seriesId": {
+            "type": "string",
+            "description": "Unique identifier for the series of recurring events",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "dayOfWeek": {
+            "type": "string",
+            "description": "Day of the week",
+            "example": "Monday",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "professional",
+          "startDate",
+          "endDate",
+          "startTime",
+          "endTime",
+          "timezone",
+          "status",
+          "recurrence",
+          "seriesId",
+          "dayOfWeek"
+        ]
+      },
+      "UpdateScheduleDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the schedule",
+            "enum": [
+              "scheduled",
+              "cancelled",
+              "completed"
+            ],
+            "example": "scheduled"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time of the schedule in HH:mm format",
+            "example": "09:00"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time of the schedule in HH:mm format",
+            "example": "17:00"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the schedule",
+            "example": "America/Sao_Paulo"
+          }
+        }
+      },
+      "CreateAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "professional": {
+            "type": "string"
+          },
+          "schedule": {
+            "type": "string"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "example": "2025-05-02"
+          },
+          "startTime": {
+            "type": "string",
+            "example": "14:00"
+          },
+          "endDate": {
+            "type": "string",
+            "example": "2025-05-02"
+          },
+          "endTime": {
+            "type": "string",
+            "example": "15:00"
+          }
+        },
+        "required": [
+          "professional",
+          "schedule",
+          "title",
+          "startDate",
+          "startTime",
+          "endDate",
+          "endTime"
+        ]
+      },
+      "Appointment": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateAppointmentDto": {
+        "type": "object",
+        "properties": {
+          "customer": {
+            "type": "string"
+          },
+          "professional": {
+            "type": "string"
+          },
+          "schedule": {
+            "type": "string"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string"
+          },
+          "endDate": {
+            "type": "string"
+          },
+          "endTime": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAppointmentStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Status of the appointment",
+            "enum": [
+              "Agendado",
+              "Pré-agendado",
+              "Cancelado"
+            ],
+            "example": "Agendado"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CheckAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "professional": {
+            "description": "Professional ID",
+            "example": "507f1f77bcf86cd799439011",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format",
+            "example": "2024-03-20"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time in HH:mm format",
+            "example": "09:00"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format",
+            "example": "2024-03-20"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time in HH:mm format",
+            "example": "10:00"
+          },
+          "excludeId": {
+            "description": "Appointment ID to exclude from check (for updates)",
+            "example": "507f1f77bcf86cd799439011",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          }
+        },
+        "required": [
+          "professional",
+          "startDate",
+          "startTime",
+          "endDate",
+          "endTime"
+        ]
+      }
+    }
+  }
+}

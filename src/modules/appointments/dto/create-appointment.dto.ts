@@ -1,30 +1,54 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateAppointmentDto {
-  @ApiProperty({
-    description: 'ID of the patient',
-    example: '603d2149fc13ae1f2b000003',
-  })
-  patient: string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsMongoId()
+  customer?: string;
 
-  @ApiProperty({
-    description: 'ID of the doctor',
-    example: '603d2149fc13ae1f2b000001',
-  })
-  doctor: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsMongoId()
+  professional: string;
 
-  @ApiProperty({
-    description: 'ID of the procedure',
-    example: '603d2149fc13ae1f2b000004',
-  })
-  procedure: string;
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsMongoId()
+  schedule: string;
 
-  @ApiProperty({
-    description: 'Date of the appointment',
-    example: '2025-04-01',
-  })
-  date: Date;
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
+  @IsMongoId({ each: true })
+  services?: string[];
 
-  @ApiProperty({ description: 'Time of the appointment', example: '09:00' })
-  time: string;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @ApiProperty({ example: '2025-05-02', required: true })
+  @IsNotEmpty()
+  @IsString()
+  startDate: string;
+
+  @ApiProperty({ example: '14:00', required: true })
+  @IsNotEmpty()
+  @IsString()
+  startTime: string;
+
+  @ApiProperty({ example: '2025-05-02', required: true })
+  @IsNotEmpty()
+  @IsString()
+  endDate: string;
+
+  @ApiProperty({ example: '15:00', required: true })
+  @IsNotEmpty()
+  @IsString()
+  endTime: string;
 }

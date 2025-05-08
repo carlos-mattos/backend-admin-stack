@@ -1,10 +1,9 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppConfigModule } from './config/config.module';
-import { PatientsModule } from './modules/patients/patients.module';
-import { DoctorsModule } from './modules/doctors/doctors.module';
-import { ProceduresModule } from './modules/procedures/procedures.module';
+import { CustomersModule } from './modules/customers/customers.module';
+import { ProfessionalsModule } from './modules/professionals/professionals.module';
+import { ServicesModule } from './modules/services/services.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 
@@ -12,9 +11,9 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
   imports: [
     AppConfigModule,
     MongooseModule.forRoot(process.env.MONGO_URI as string),
-    PatientsModule,
-    DoctorsModule,
-    ProceduresModule,
+    CustomersModule,
+    ProfessionalsModule,
+    ServicesModule,
     SchedulesModule,
     AppointmentsModule,
   ],

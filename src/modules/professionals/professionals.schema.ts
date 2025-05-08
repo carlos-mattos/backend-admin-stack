@@ -1,14 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Service } from '../services/services.schema';
 
-export type DoctorDocument = Doctor & Document;
+export type ProfessionalDocument = Professional & Document;
 
 @Schema({
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 })
-export class Doctor {
+export class Professional {
   @Prop({ required: true })
   fullName: string;
 
@@ -22,10 +23,10 @@ export class Doctor {
   documents: string;
 
   @Prop({
-    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Procedure' }],
+    type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Service' }],
     default: [],
   })
-  proceduresHandled: string[];
+  serviceHandled: Service[];
 
   @Prop({
     required: true,
@@ -40,10 +41,10 @@ export class Doctor {
   acceptedInsurances: string[];
 }
 
-export const DoctorSchema = SchemaFactory.createForClass(Doctor);
+export const ProfessionalSchema = SchemaFactory.createForClass(Professional);
 
-DoctorSchema.virtual('schedules', {
+ProfessionalSchema.virtual('schedules', {
   ref: 'Schedule',
   localField: '_id',
-  foreignField: 'doctor',
+  foreignField: 'professional',
 });
