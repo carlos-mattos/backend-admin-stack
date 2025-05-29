@@ -702,19 +702,6 @@
       }
     },
     "/appointments": {
-      "get": {
-        "operationId": "AppointmentsController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of all appointments retrieved successfully."
-          }
-        },
-        "summary": "Get all appointments",
-        "tags": [
-          "appointments"
-        ]
-      },
       "post": {
         "operationId": "AppointmentsController_create",
         "parameters": [],
@@ -730,28 +717,59 @@
         },
         "responses": {
           "201": {
-            "description": "Appointment created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Appointment"
-                }
-              }
-            }
+            "description": "The appointment has been successfully created."
           }
         },
         "summary": "Create a new appointment",
         "tags": [
           "appointments"
         ]
+      },
+      "get": {
+        "operationId": "AppointmentsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return all appointments."
+          }
+        },
+        "summary": "Get all appointments",
+        "tags": [
+          "appointments"
+        ]
       }
     },
-    "/appointments/professional/{professionalId}": {
+    "/appointments/finance": {
+      "post": {
+        "operationId": "AppointmentsController_createWithFinance",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentFinanceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The appointment has been successfully created with finance details."
+          }
+        },
+        "summary": "Create a new appointment with finance details",
+        "tags": [
+          "appointments"
+        ]
+      }
+    },
+    "/appointments/{id}": {
       "get": {
-        "operationId": "AppointmentsController_findByProfessional",
+        "operationId": "AppointmentsController_findOne",
         "parameters": [
           {
-            "name": "professionalId",
+            "name": "id",
             "required": true,
             "in": "path",
             "schema": {
@@ -761,16 +779,17 @@
         ],
         "responses": {
           "200": {
-            "description": "List of appointments retrieved successfully."
+            "description": "Return the appointment."
+          },
+          "404": {
+            "description": "Appointment not found."
           }
         },
-        "summary": "Get all appointments for a professional",
+        "summary": "Get an appointment by id",
         "tags": [
           "appointments"
         ]
-      }
-    },
-    "/appointments/{id}": {
+      },
       "patch": {
         "operationId": "AppointmentsController_update",
         "parameters": [
@@ -795,7 +814,10 @@
         },
         "responses": {
           "200": {
-            "description": "Appointment updated successfully."
+            "description": "The appointment has been successfully updated."
+          },
+          "404": {
+            "description": "Appointment not found."
           }
         },
         "summary": "Update an appointment",
@@ -817,7 +839,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Appointment deleted successfully."
+            "description": "The appointment has been successfully deleted."
+          },
+          "404": {
+            "description": "Appointment not found."
           }
         },
         "summary": "Delete an appointment",
@@ -933,6 +958,481 @@
           "appointments"
         ]
       }
+    },
+    "/accounts-receivable": {
+      "get": {
+        "operationId": "AccountsReceivableController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return all accounts receivable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateAccountReceivableDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all accounts receivable",
+        "tags": [
+          "accounts-receivable"
+        ]
+      },
+      "post": {
+        "operationId": "AccountsReceivableController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountReceivableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The account receivable has been successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountReceivableDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new account receivable",
+        "tags": [
+          "accounts-receivable"
+        ]
+      }
+    },
+    "/accounts-receivable/{id}": {
+      "get": {
+        "operationId": "AccountsReceivableController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Account receivable ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the account receivable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountReceivableDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account receivable not found"
+          }
+        },
+        "summary": "Get an account receivable by id",
+        "tags": [
+          "accounts-receivable"
+        ]
+      },
+      "patch": {
+        "operationId": "AccountsReceivableController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Account receivable ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountReceivableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The account receivable has been successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountReceivableDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account receivable not found"
+          }
+        },
+        "summary": "Update an account receivable",
+        "tags": [
+          "accounts-receivable"
+        ]
+      }
+    },
+    "/accounts-payable": {
+      "get": {
+        "operationId": "AccountsPayableController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return all accounts payable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreateAccountPayableDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all accounts payable",
+        "tags": [
+          "accounts-payable"
+        ]
+      },
+      "post": {
+        "operationId": "AccountsPayableController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountPayableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The account payable has been successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountPayableDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Create a new account payable",
+        "tags": [
+          "accounts-payable"
+        ]
+      }
+    },
+    "/accounts-payable/{id}": {
+      "get": {
+        "operationId": "AccountsPayableController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Account payable ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the account payable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountPayableDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account payable not found"
+          }
+        },
+        "summary": "Get an account payable by id",
+        "tags": [
+          "accounts-payable"
+        ]
+      },
+      "put": {
+        "operationId": "AccountsPayableController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Account payable ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountPayableDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The account payable has been successfully updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccountPayableDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account payable not found"
+          }
+        },
+        "summary": "Update an account payable",
+        "tags": [
+          "accounts-payable"
+        ]
+      }
+    },
+    "/cash-flow-report": {
+      "get": {
+        "operationId": "CashFlowController_getReport",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "description": "Start date for the cash flow report (YYYY-MM-DD)",
+            "schema": {
+              "example": "2024-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "description": "End date for the cash flow report (YYYY-MM-DD)",
+            "schema": {
+              "example": "2024-12-31",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the cash flow report with totals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashFlowReportDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get cash flow report for a date range",
+        "tags": [
+          "cash-flow"
+        ]
+      }
+    },
+    "/payment-methods": {
+      "post": {
+        "operationId": "PaymentMethodsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentMethodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment method created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentMethod"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "summary": "Create a new payment method",
+        "tags": [
+          "payment-methods"
+        ]
+      },
+      "get": {
+        "operationId": "PaymentMethodsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Return all payment methods",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentMethod"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all payment methods",
+        "tags": [
+          "payment-methods"
+        ]
+      }
+    },
+    "/payment-methods/{id}": {
+      "get": {
+        "operationId": "PaymentMethodsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the payment method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentMethod"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment method not found"
+          }
+        },
+        "summary": "Get a payment method by id",
+        "tags": [
+          "payment-methods"
+        ]
+      },
+      "patch": {
+        "operationId": "PaymentMethodsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePaymentMethodDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment method updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentMethod"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment method not found"
+          }
+        },
+        "summary": "Update a payment method",
+        "tags": [
+          "payment-methods"
+        ]
+      },
+      "delete": {
+        "operationId": "PaymentMethodsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment method deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentMethod"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment method not found"
+          }
+        },
+        "summary": "Delete a payment method",
+        "tags": [
+          "payment-methods"
+        ]
+      }
     }
   },
   "info": {
@@ -1028,25 +1528,13 @@
             "items": {
               "type": "string"
             }
-          },
-          "acceptedInsurances": {
-            "description": "List of insurances accepted by the Professional",
-            "example": [
-              "Insurance A",
-              "Insurance B"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         },
         "required": [
           "fullName",
           "crm",
           "contact",
-          "documents",
-          "acceptedInsurances"
+          "documents"
         ]
       },
       "Professional": {
@@ -1117,16 +1605,14 @@
             "example": "507f1f77bcf86cd799439011"
           },
           "startDate": {
-            "format": "date-time",
             "type": "string",
             "description": "Start date of the schedule",
-            "example": "2024-03-20T09:00:00Z"
+            "example": "2024-03-20"
           },
           "endDate": {
-            "format": "date-time",
             "type": "string",
             "description": "End date of the schedule",
-            "example": "2024-03-20T17:00:00Z"
+            "example": "2024-03-20"
           },
           "startTime": {
             "type": "string",
@@ -1210,13 +1696,11 @@
             ]
           },
           "startDate": {
-            "format": "date-time",
             "type": "string",
             "description": "Start date of the schedule",
             "example": "2024-03-20T09:00:00Z"
           },
           "endDate": {
-            "format": "date-time",
             "type": "string",
             "description": "End date of the schedule",
             "example": "2024-03-20T17:00:00Z"
@@ -1334,92 +1818,237 @@
       "CreateAppointmentDto": {
         "type": "object",
         "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the appointment",
+            "example": "Teste Um"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the appointment",
+            "example": "teste"
+          },
           "customer": {
-            "type": "string"
+            "type": "string",
+            "description": "Customer ID",
+            "example": "507f1f77bcf86cd799439012",
+            "minLength": 24,
+            "maxLength": 24
           },
           "professional": {
-            "type": "string"
-          },
-          "schedule": {
-            "type": "string"
+            "type": "string",
+            "description": "Professional ID",
+            "example": "507f1f77bcf86cd799439011",
+            "minLength": 24,
+            "maxLength": 24
           },
           "services": {
+            "description": "Service IDs",
+            "example": [
+              "507f1f77bcf86cd799439013"
+            ],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
-          "description": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
           "startDate": {
             "type": "string",
-            "example": "2025-05-02"
+            "description": "Start date in YYYY-MM-DD format",
+            "example": "2024-03-20"
           },
           "startTime": {
             "type": "string",
-            "example": "14:00"
+            "description": "Start time in HH:mm format",
+            "example": "14:30"
           },
           "endDate": {
             "type": "string",
-            "example": "2025-05-02"
+            "description": "End date in YYYY-MM-DD format",
+            "example": "2024-03-20"
           },
           "endTime": {
             "type": "string",
-            "example": "15:00"
+            "description": "End time in HH:mm format",
+            "example": "15:30"
+          },
+          "status": {
+            "type": "string",
+            "description": "Appointment status",
+            "enum": [
+              "SCHEDULED",
+              "PRE_SCHEDULED",
+              "CANCELLED",
+              "BLOCKED"
+            ],
+            "example": "SCHEDULED",
+            "default": "SCHEDULED"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the appointment",
+            "example": "America/Sao_Paulo"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to be paid",
+            "example": 150,
+            "minimum": 0,
+            "maximum": 999999.99
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "description": "Payment method ID",
+            "example": "507f1f77bcf86cd799439014",
+            "minLength": 24,
+            "maxLength": 24
           }
         },
         "required": [
-          "professional",
-          "schedule",
           "title",
+          "description",
+          "professional",
           "startDate",
           "startTime",
           "endDate",
-          "endTime"
+          "endTime",
+          "status",
+          "timezone"
         ]
       },
-      "Appointment": {
+      "CreateAppointmentFinanceDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the appointment",
+            "example": "Teste Um"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the appointment",
+            "example": "teste"
+          },
+          "customer": {
+            "type": "string",
+            "description": "Customer ID",
+            "example": "507f1f77bcf86cd799439012",
+            "minLength": 24,
+            "maxLength": 24
+          },
+          "professional": {
+            "type": "string",
+            "description": "Professional ID",
+            "example": "507f1f77bcf86cd799439011",
+            "minLength": 24,
+            "maxLength": 24
+          },
+          "services": {
+            "description": "Service IDs",
+            "example": [
+              "507f1f77bcf86cd799439013"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Start date in YYYY-MM-DD format",
+            "example": "2024-03-20"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "Start time in HH:mm format",
+            "example": "14:30"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "End date in YYYY-MM-DD format",
+            "example": "2024-03-20"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "End time in HH:mm format",
+            "example": "15:30"
+          },
+          "status": {
+            "type": "string",
+            "description": "Appointment status",
+            "enum": [
+              "SCHEDULED",
+              "PRE_SCHEDULED",
+              "CANCELLED",
+              "BLOCKED"
+            ],
+            "example": "SCHEDULED",
+            "default": "SCHEDULED"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the appointment",
+            "example": "America/Sao_Paulo"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Amount to be paid",
+            "example": 150,
+            "minimum": 0,
+            "maximum": 999999.99
+          },
+          "paymentMethodId": {
+            "type": "string",
+            "description": "Payment method ID",
+            "example": "507f1f77bcf86cd799439014",
+            "minLength": 24,
+            "maxLength": 24
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "customer",
+          "professional",
+          "services",
+          "startDate",
+          "startTime",
+          "endDate",
+          "endTime",
+          "status",
+          "timezone",
+          "amount",
+          "paymentMethodId"
+        ]
       },
       "UpdateAppointmentDto": {
         "type": "object",
         "properties": {
-          "customer": {
-            "type": "string"
-          },
-          "professional": {
-            "type": "string"
-          },
-          "schedule": {
-            "type": "string"
-          },
-          "services": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "Title of the appointment",
+            "example": "Teste Um"
           },
-          "startDate": {
-            "type": "string"
+          "description": {
+            "type": "string",
+            "description": "Description of the appointment",
+            "example": "teste"
           },
-          "startTime": {
-            "type": "string"
-          },
-          "endDate": {
-            "type": "string"
-          },
-          "endTime": {
-            "type": "string"
+          "paymentStatus": {
+            "type": "string",
+            "description": "Payment status of the appointment",
+            "example": "PAID",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "CANCELED"
+            ]
           }
-        }
+        },
+        "required": [
+          "title",
+          "description"
+        ]
       },
       "UpdateAppointmentStatusDto": {
         "type": "object",
@@ -1443,13 +2072,11 @@
         "type": "object",
         "properties": {
           "professional": {
+            "type": "string",
             "description": "Professional ID",
             "example": "507f1f77bcf86cd799439011",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
+            "minLength": 24,
+            "maxLength": 24
           },
           "startDate": {
             "type": "string",
@@ -1459,7 +2086,7 @@
           "startTime": {
             "type": "string",
             "description": "Start time in HH:mm format",
-            "example": "09:00"
+            "example": "14:30"
           },
           "endDate": {
             "type": "string",
@@ -1469,16 +2096,19 @@
           "endTime": {
             "type": "string",
             "description": "End time in HH:mm format",
-            "example": "10:00"
+            "example": "15:30"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone of the appointment",
+            "example": "America/Sao_Paulo"
           },
           "excludeId": {
-            "description": "Appointment ID to exclude from check (for updates)",
+            "type": "string",
+            "description": "Appointment ID to exclude from check",
             "example": "507f1f77bcf86cd799439011",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
+            "minLength": 24,
+            "maxLength": 24
           }
         },
         "required": [
@@ -1486,8 +2116,216 @@
           "startDate",
           "startTime",
           "endDate",
-          "endTime"
+          "endTime",
+          "timezone"
         ]
+      },
+      "CreateAccountReceivableDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the receivable",
+            "example": 1500.5
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Due date of the receivable",
+            "example": "2024-12-31"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "ID of the customer",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "paymentMethodId": {
+            "type": "number",
+            "description": "ID of the payment method",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the receivable",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "OVERDUE",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          }
+        },
+        "required": [
+          "amount",
+          "dueDate",
+          "customerId",
+          "paymentMethodId",
+          "status"
+        ]
+      },
+      "UpdateAccountReceivableDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the receivable",
+            "example": 1500.5
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Due date of the receivable",
+            "example": "2024-12-31"
+          },
+          "customerId": {
+            "description": "ID of the customer",
+            "example": "507f1f77bcf86cd799439011",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "paymentMethodId": {
+            "type": "number",
+            "description": "ID of the payment method",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the receivable",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "OVERDUE",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          }
+        }
+      },
+      "CreateAccountPayableDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the payable",
+            "example": 1500.5
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Due date of the payable",
+            "example": "2024-12-31"
+          },
+          "vendor": {
+            "type": "string",
+            "description": "Vendor name",
+            "example": "Supplier XYZ"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the payable",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "OVERDUE",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          }
+        },
+        "required": [
+          "amount",
+          "dueDate",
+          "vendor",
+          "status"
+        ]
+      },
+      "UpdateAccountPayableDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "Amount of the payable",
+            "example": 1500.5
+          },
+          "dueDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Due date of the payable",
+            "example": "2024-12-31"
+          },
+          "vendor": {
+            "type": "string",
+            "description": "Vendor name",
+            "example": "Supplier XYZ"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the payable",
+            "enum": [
+              "PENDING",
+              "PAID",
+              "OVERDUE",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          }
+        }
+      },
+      "CashFlowReportDto": {
+        "type": "object",
+        "properties": {
+          "totalIn": {
+            "type": "number",
+            "description": "Total amount of money received (accounts receivable)",
+            "example": 15000.5
+          },
+          "totalOut": {
+            "type": "number",
+            "description": "Total amount of money paid (accounts payable)",
+            "example": 8500.25
+          },
+          "netBalance": {
+            "type": "number",
+            "description": "Net balance (totalIn - totalOut)",
+            "example": 6500.25
+          }
+        },
+        "required": [
+          "totalIn",
+          "totalOut",
+          "netBalance"
+        ]
+      },
+      "CreatePaymentMethodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the payment method",
+            "example": "Credit Card"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "PaymentMethod": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePaymentMethodDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the payment method",
+            "example": "Credit Card"
+          }
+        }
       }
     }
   }

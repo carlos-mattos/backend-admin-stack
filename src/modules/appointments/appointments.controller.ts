@@ -1,64 +1,74 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { UpdateAppointmentStatusDto } from './dto/confirm-appointment.dto';
-import { Appointment } from './appointment.schema';
 import { CheckAvailabilityDto } from './dto/check-availability.dto';
+import { UpdateAppointmentStatusDto } from './dto/confirm-appointment.dto';
+import { CreateAppointmentFinanceDto } from './dto/create-appointment-finance.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { CheckAvailabilityResponse } from './interfaces/check-availability.interface';
+import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 
 @ApiTags('appointments')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
-  @Get()
-  @ApiOperation({ summary: 'Get all appointments' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of all appointments retrieved successfully.',
-  })
-  async findAll() {
-    return this.appointmentsService.findAll();
-  }
-
   @Post()
   @ApiOperation({ summary: 'Create a new appointment' })
   @ApiResponse({
     status: 201,
-    description: 'Appointment created successfully.',
-    type: Appointment,
+    description: 'The appointment has been successfully created.',
   })
-  async create(@Body() createAppointmentDto: CreateAppointmentDto) {
+  create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentsService.create(createAppointmentDto);
   }
 
-  @Get('professional/:professionalId')
-  @ApiOperation({ summary: 'Get all appointments for a professional' })
+  @Post('finance')
+  @ApiOperation({ summary: 'Create a new appointment with finance details' })
   @ApiResponse({
-    status: 200,
-    description: 'List of appointments retrieved successfully.',
+    status: 201,
+    description:
+      'The appointment has been successfully created with finance details.',
   })
-  async findByProfessional(@Param('professionalId') professionalId: string) {
-    return this.appointmentsService.findByProfessional(professionalId);
+  createWithFinance(
+    @Body() createAppointmentFinanceDto: CreateAppointmentFinanceDto,
+  ) {
+    return this.appointmentsService.createWithFinance(
+      createAppointmentFinanceDto,
+    );
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all appointments' })
+  @ApiResponse({ status: 200, description: 'Return all appointments.' })
+  findAll() {
+    return this.appointmentsService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get an appointment by id' })
+  @ApiResponse({ status: 200, description: 'Return the appointment.' })
+  @ApiResponse({ status: 404, description: 'Appointment not found.' })
+  findOne(@Param('id') id: string) {
+    return this.appointmentsService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an appointment' })
   @ApiResponse({
     status: 200,
-    description: 'Appointment updated successfully.',
+    description: 'The appointment has been successfully updated.',
   })
-  async update(
+  @ApiResponse({ status: 404, description: 'Appointment not found.' })
+  update(
     @Param('id') id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
@@ -69,9 +79,10 @@ export class AppointmentsController {
   @ApiOperation({ summary: 'Delete an appointment' })
   @ApiResponse({
     status: 200,
-    description: 'Appointment deleted successfully.',
+    description: 'The appointment has been successfully deleted.',
   })
-  async remove(@Param('id') id: string) {
+  @ApiResponse({ status: 404, description: 'Appointment not found.' })
+  remove(@Param('id') id: string) {
     return this.appointmentsService.remove(id);
   }
 
