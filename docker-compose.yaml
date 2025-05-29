@@ -13,8 +13,8 @@ services:
     build: .
     restart: always
     environment:
-      MONGO_URI: mongodb://mongo:27017/admin
+      MONGODB_URI: mongodb://mongo:27017/admin
     ports:
-      - "3000:3000"
+      - "3015:3015"
     depends_on:
       - mongo

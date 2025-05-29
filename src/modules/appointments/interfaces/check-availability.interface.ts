@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { AppointmentStatus } from '../enums/appointment-status.enum';
 
 export interface ConflictAppointment {
   _id: Types.ObjectId;
@@ -11,7 +12,6 @@ export interface ConflictAppointment {
 
 export interface CheckAvailabilityResponse {
   available: boolean;
-  scheduleId?: string;
   conflicts?: {
     appointments: {
       _id: string;
@@ -19,7 +19,14 @@ export interface CheckAvailabilityResponse {
       startTime: string;
       endDate: string;
       endTime: string;
-      status: string;
+      status: AppointmentStatus;
     }[];
   };
+  nextAvailableSlot?: {
+    startDate: string;
+    startTime: string;
+    endDate: string;
+    endTime: string;
+  };
+  message?: string;
 }

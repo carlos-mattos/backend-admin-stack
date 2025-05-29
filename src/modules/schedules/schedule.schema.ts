@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { toZonedTime } from 'date-fns-tz';
 
 export enum ScheduleStatus {
   SCHEDULED = 'scheduled',
@@ -33,15 +34,15 @@ export class Schedule extends Document {
     description: 'Start date of the schedule',
     example: '2024-03-20T09:00:00Z',
   })
-  @Prop({ required: true })
-  startDate: Date;
+  @Prop({ required: true, type: String })
+  startDate: string;
 
   @ApiProperty({
     description: 'End date of the schedule',
     example: '2024-03-20T17:00:00Z',
   })
-  @Prop({ required: true })
-  endDate: Date;
+  @Prop({ required: true, type: String })
+  endDate: string;
 
   @ApiProperty({
     description: 'Start time in HH:mm format',
@@ -117,7 +118,6 @@ export class Schedule extends Document {
 
 export const ScheduleSchema = SchemaFactory.createForClass(Schedule);
 
-// Adiciona o virtual field para o dia da semana
 ScheduleSchema.virtual('dayOfWeek').get(function () {
   const days = [
     'Sunday',
@@ -128,11 +128,8 @@ ScheduleSchema.virtual('dayOfWeek').get(function () {
     'Friday',
     'Saturday',
   ];
-  // Ajusta a data para o fuso horário correto
-  const date = new Date(this.startDate);
-  const timezoneOffset = date.getTimezoneOffset();
-  date.setMinutes(date.getMinutes() + timezoneOffset);
-  return days[date.getDay()];
+  const zonedDate = toZonedTime(this.startDate, this.timezone);
+  return days[zonedDate.getDay()];
 });
 
 export type ScheduleDocument = Schedule & Document;

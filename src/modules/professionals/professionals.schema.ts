@@ -27,18 +27,6 @@ export class Professional {
     default: [],
   })
   serviceHandled: Service[];
-
-  @Prop({
-    required: true,
-    type: [String],
-    set: (value: string | string[]): string[] => {
-      if (typeof value === 'string') {
-        return value.split(',').map((item) => item.trim());
-      }
-      return value;
-    },
-  })
-  acceptedInsurances: string[];
 }
 
 export const ProfessionalSchema = SchemaFactory.createForClass(Professional);

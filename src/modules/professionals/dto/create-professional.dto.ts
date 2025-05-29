@@ -26,11 +26,4 @@ export class CreateProfessionalDto {
     example: ['603d2149fc13ae1f2b000001', '603d2149fc13ae1f2b000002'],
   })
   serviceHandled?: string[];
-
-  @ApiProperty({
-    description: 'List of insurances accepted by the Professional',
-    type: [String],
-    example: ['Insurance A', 'Insurance B'],
-  })
-  acceptedInsurances: string[];
 }

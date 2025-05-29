@@ -1,49 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsMongoId, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { PaymentStatus } from '../enums/payment-status.enum';
 
 export class UpdateAppointmentDto {
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsMongoId()
-  customer?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsMongoId()
-  professional?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsMongoId()
-  schedule?: string;
-
-  @ApiProperty({ required: false, type: [String] })
-  @IsOptional()
-  @IsMongoId({ each: true })
-  services?: string[];
-
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Title of the appointment',
+    example: 'Teste Um',
+  })
   @IsOptional()
   @IsString()
   title?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Description of the appointment',
+    example: 'teste',
+  })
   @IsOptional()
   @IsString()
-  startDate?: string;
+  description?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    description: 'Payment status of the appointment',
+    example: PaymentStatus.PAID,
+    required: false,
+    enum: PaymentStatus,
+  })
   @IsOptional()
-  @IsString()
-  startTime?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  endDate?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  endTime?: string;
+  @IsEnum(PaymentStatus)
+  paymentStatus?: PaymentStatus;
 }

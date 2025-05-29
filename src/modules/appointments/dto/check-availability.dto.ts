@@ -1,26 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsMongoId, IsOptional, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CheckAvailabilityDto {
   @ApiProperty({
     description: 'Professional ID',
     example: '507f1f77bcf86cd799439011',
+    minLength: 24,
+    maxLength: 24,
   })
+  @IsNotEmpty()
   @IsMongoId()
-  professional: Types.ObjectId;
+  professional: string;
 
   @ApiProperty({
     description: 'Start date in YYYY-MM-DD format',
     example: '2024-03-20',
   })
-  @IsDateString()
+  @IsNotEmpty()
+  @IsString()
   startDate: string;
 
   @ApiProperty({
     description: 'Start time in HH:mm format',
-    example: '09:00',
+    example: '14:30',
   })
+  @IsNotEmpty()
   @IsString()
   startTime: string;
 
@@ -28,22 +32,34 @@ export class CheckAvailabilityDto {
     description: 'End date in YYYY-MM-DD format',
     example: '2024-03-20',
   })
-  @IsDateString()
+  @IsNotEmpty()
+  @IsString()
   endDate: string;
 
   @ApiProperty({
     description: 'End time in HH:mm format',
-    example: '10:00',
+    example: '15:30',
   })
+  @IsNotEmpty()
   @IsString()
   endTime: string;
 
   @ApiProperty({
-    description: 'Appointment ID to exclude from check (for updates)',
+    description: 'Timezone of the appointment',
+    example: 'America/Sao_Paulo',
+  })
+  @IsNotEmpty()
+  @IsString()
+  timezone: string;
+
+  @ApiProperty({
+    description: 'Appointment ID to exclude from check',
     example: '507f1f77bcf86cd799439011',
+    minLength: 24,
+    maxLength: 24,
     required: false,
   })
   @IsOptional()
   @IsMongoId()
-  excludeId?: Types.ObjectId;
-} 
+  excludeId?: string;
+}
