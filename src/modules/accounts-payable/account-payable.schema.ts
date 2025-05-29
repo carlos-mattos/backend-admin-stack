@@ -5,7 +5,14 @@ export enum PaymentStatus {
   PENDING = 'PENDING',
   PAID = 'PAID',
   OVERDUE = 'OVERDUE',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED',
+}
+
+export enum RecurrencePeriod {
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  QUARTERLY = 'QUARTERLY',
+  YEARLY = 'YEARLY',
 }
 
 export type AccountPayableDocument = AccountPayable & Document;
@@ -23,6 +30,22 @@ export class AccountPayable {
 
   @Prop({ required: true, enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;
+
+  @Prop({ required: true, type: String })
+  description: string;
+
+  @Prop({ required: true, type: String })
+  type: string;
+
+  @Prop({ required: true, type: String })
+  category: string;
+
+  @Prop({ required: true, type: Boolean })
+  isRecurring: boolean;
+
+  @Prop({ required: false, enum: RecurrencePeriod })
+  recurrencePeriod?: RecurrencePeriod;
 }
 
-export const AccountPayableSchema = SchemaFactory.createForClass(AccountPayable); 
+export const AccountPayableSchema =
+  SchemaFactory.createForClass(AccountPayable);

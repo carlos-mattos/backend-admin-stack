@@ -32,12 +32,17 @@ export class AccountsReceivableService {
   async create(
     createAccountReceivableDto: CreateAccountReceivableDto,
   ): Promise<AccountReceivableDocument> {
-    const createdAccountReceivable = new this.accountReceivableModel({
+    const data: any = {
       ...createAccountReceivableDto,
-      paymentMethodId: new Types.ObjectId(createAccountReceivableDto.paymentMethodId),
-      appointmentId: new Types.ObjectId(createAccountReceivableDto.appointmentId),
       customerId: new Types.ObjectId(createAccountReceivableDto.customerId),
-    });
+      paymentMethodId: createAccountReceivableDto.paymentMethodId
+        ? new Types.ObjectId(createAccountReceivableDto.paymentMethodId)
+        : null,
+      appointmentId: createAccountReceivableDto.appointmentId
+        ? new Types.ObjectId(createAccountReceivableDto.appointmentId)
+        : null,
+    };
+    const createdAccountReceivable = new this.accountReceivableModel(data);
     return createdAccountReceivable.save();
   }
 

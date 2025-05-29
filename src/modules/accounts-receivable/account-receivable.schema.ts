@@ -4,7 +4,6 @@ import { Document, Types } from 'mongoose';
 export enum PaymentStatus {
   PENDING = 'PENDING',
   PAID = 'PAID',
-  OVERDUE = 'OVERDUE',
   CANCELLED = 'CANCELLED',
 }
 
@@ -22,7 +21,7 @@ export class AccountReceivable {
   customerId: Types.ObjectId;
 
   @Prop({ required: false, type: Types.ObjectId, ref: 'PaymentMethod' })
-  paymentMethodId: Types.ObjectId;
+  paymentMethodId?: Types.ObjectId;
 
   @Prop({ required: false, type: Types.ObjectId, ref: 'Appointment' })
   appointmentId?: Types.ObjectId;

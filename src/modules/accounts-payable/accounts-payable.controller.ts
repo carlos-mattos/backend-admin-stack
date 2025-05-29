@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AccountsPayableService } from './accounts-payable.service';
 import { CreateAccountPayableDto } from './dto/create-account-payable.dto';
@@ -8,7 +8,9 @@ import { AccountPayableDocument } from './account-payable.schema';
 @ApiTags('accounts-payable')
 @Controller('accounts-payable')
 export class AccountsPayableController {
-  constructor(private readonly accountsPayableService: AccountsPayableService) {}
+  constructor(
+    private readonly accountsPayableService: AccountsPayableService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all accounts payable' })
@@ -41,11 +43,13 @@ export class AccountsPayableController {
     description: 'The account payable has been successfully created',
     type: CreateAccountPayableDto,
   })
-  create(@Body() createAccountPayableDto: CreateAccountPayableDto): Promise<AccountPayableDocument> {
+  create(
+    @Body() createAccountPayableDto: CreateAccountPayableDto,
+  ): Promise<AccountPayableDocument> {
     return this.accountsPayableService.create(createAccountPayableDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update an account payable' })
   @ApiParam({ name: 'id', description: 'Account payable ID' })
   @ApiResponse({
@@ -60,4 +64,4 @@ export class AccountsPayableController {
   ): Promise<AccountPayableDocument> {
     return this.accountsPayableService.update(id, updateAccountPayableDto);
   }
-} 
+}
