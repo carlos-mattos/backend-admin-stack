@@ -14,9 +14,6 @@ export class Professional {
   fullName: string;
 
   @Prop({ required: true })
-  crm: string;
-
-  @Prop({ required: true })
   contact: string;
 
   @Prop({ required: true })

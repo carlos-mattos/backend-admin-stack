@@ -9,7 +9,11 @@ import {
   AccountPayable,
   AccountPayableDocument,
 } from '../accounts-payable/account-payable.schema';
-import { CashFlowReportDto } from './dto/cash-flow-report.dto';
+import {
+  CashFlowReportDto,
+  CashFlowMonthlyDto,
+  CashFlowSummaryDto,
+} from './dto/cash-flow-report.dto';
 
 @Injectable()
 export class CashFlowService {
@@ -21,48 +25,71 @@ export class CashFlowService {
   ) {}
 
   async getReport(start: Date, end: Date): Promise<CashFlowReportDto> {
-    const [receivables, payables] = await Promise.all([
-      this.accountReceivableModel
-        .aggregate([
-          {
-            $match: {
-              dueDate: { $gte: start, $lte: end },
-              status: 'PAID',
-            },
+    const receivables = await this.accountReceivableModel
+      .aggregate([
+        {
+          $match: {
+            dueDate: { $gte: start, $lte: end },
+            status: 'PAID',
           },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: '$amount' },
-            },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$dueDate' } },
+            inflow: { $sum: '$amount' },
           },
-        ])
-        .exec(),
-      this.accountPayableModel
-        .aggregate([
-          {
-            $match: {
-              dueDate: { $gte: start, $lte: end },
-              status: 'PAID',
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: '$amount' },
-            },
-          },
-        ])
-        .exec(),
-    ]);
+        },
+        { $sort: { _id: 1 } },
+      ])
+      .exec();
 
-    const totalIn = receivables[0]?.total || 0;
-    const totalOut = payables[0]?.total || 0;
+    const payables = await this.accountPayableModel
+      .aggregate([
+        {
+          $match: {
+            dueDate: { $gte: start, $lte: end },
+            status: 'PAID',
+          },
+        },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m', date: '$dueDate' } },
+            outflow: { $sum: '$amount' },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ])
+      .exec();
+
+    const monthSet = new Set<string>();
+    receivables.forEach((r) => monthSet.add(r._id));
+    payables.forEach((p) => monthSet.add(p._id));
+    const months = Array.from(monthSet).sort();
+
+    const monthly: CashFlowMonthlyDto[] = months.map((month) => {
+      const inflow = receivables.find((r) => r._id === month)?.inflow || 0;
+      const outflow = payables.find((p) => p._id === month)?.outflow || 0;
+      return {
+        month,
+        inflow,
+        outflow,
+        balance: inflow - outflow,
+      };
+    });
+
+    const totalInflow = monthly.reduce((sum, m) => sum + m.inflow, 0);
+    const totalOutflow = monthly.reduce((sum, m) => sum + m.outflow, 0);
+    const netBalance = totalInflow - totalOutflow;
+
+    const summary: CashFlowSummaryDto = {
+      totalInflow,
+      totalOutflow,
+      netBalance,
+    };
 
     return {
-      totalIn,
-      totalOut,
-      netBalance: totalIn - totalOut,
+      summary,
+      monthly,
     };
   }
 }

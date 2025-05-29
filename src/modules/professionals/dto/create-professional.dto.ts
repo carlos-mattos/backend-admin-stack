@@ -8,9 +8,6 @@ export class CreateProfessionalDto {
   })
   fullName: string;
 
-  @ApiProperty({ description: 'CRM of the Professional', example: '123456' })
-  crm: string;
-
   @ApiProperty({ description: 'Contact information', example: '+1234567890' })
   contact: string;
 

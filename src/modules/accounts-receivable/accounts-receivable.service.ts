@@ -42,6 +42,11 @@ export class AccountsReceivableService {
         ? new Types.ObjectId(createAccountReceivableDto.appointmentId)
         : null,
     };
+    if (!data.dueDate) {
+      const date = new Date();
+      date.setDate(date.getDate() + 30);
+      data.dueDate = date;
+    }
     const createdAccountReceivable = new this.accountReceivableModel(data);
     return createdAccountReceivable.save();
   }

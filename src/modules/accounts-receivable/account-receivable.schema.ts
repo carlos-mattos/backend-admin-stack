@@ -14,7 +14,15 @@ export class AccountReceivable {
   @Prop({ required: true, type: Number })
   amount: number;
 
-  @Prop({ required: false, type: Date })
+  @Prop({
+    required: false,
+    type: Date,
+    default: () => {
+      const date = new Date();
+      date.setDate(date.getDate() + 30);
+      return date;
+    },
+  })
   dueDate?: Date;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Customer' })

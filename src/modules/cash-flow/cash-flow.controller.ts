@@ -10,12 +10,12 @@ export class CashFlowController {
   constructor(private readonly cashFlowService: CashFlowService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get cash flow report for a date range' })
+  @ApiOperation({ summary: 'Get cash flow report for a date range (monthly breakdown and summary)' })
   @ApiQuery({ name: 'startDate', type: String, example: '2024-01-01' })
   @ApiQuery({ name: 'endDate', type: String, example: '2024-12-31' })
   @ApiResponse({
     status: 200,
-    description: 'Returns the cash flow report with totals',
+    description: 'Returns the cash flow report with monthly breakdown and summary',
     type: CashFlowReportDto,
   })
   async getReport(@Query() query: CashFlowQueryDto): Promise<CashFlowReportDto> {
