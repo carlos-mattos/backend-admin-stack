@@ -7,12 +7,6 @@ export type PaymentMethodDocument = PaymentMethod & Document;
 export class PaymentMethod {
   @Prop({ required: true, type: String, unique: true })
   name: string;
-
-  @Prop({ required: true, type: Boolean, default: true })
-  isActive: boolean;
-
-  @Prop({ required: true, type: Number, default: 0 })
-  displayOrder: number;
 }
 
 export const PaymentMethodSchema = SchemaFactory.createForClass(PaymentMethod); 

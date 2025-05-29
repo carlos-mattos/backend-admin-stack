@@ -1048,7 +1048,7 @@
           "accounts-receivable"
         ]
       },
-      "put": {
+      "patch": {
         "operationId": "AccountsReceivableController_update",
         "parameters": [
           {
@@ -1896,23 +1896,12 @@
             "minimum": 0,
             "maximum": 999999.99
           },
-          "dueDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Due date for payment",
-            "example": "2024-03-20T14:30:00Z"
-          },
           "paymentMethodId": {
             "type": "string",
             "description": "Payment method ID",
             "example": "507f1f77bcf86cd799439014",
             "minLength": 24,
             "maxLength": 24
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes",
-            "example": "Customer requested specific attention"
           }
         },
         "required": [
@@ -2008,23 +1997,12 @@
             "minimum": 0,
             "maximum": 999999.99
           },
-          "dueDate": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Due date for payment",
-            "example": "2024-03-20T14:30:00Z"
-          },
           "paymentMethodId": {
             "type": "string",
             "description": "Payment method ID",
             "example": "507f1f77bcf86cd799439014",
             "minLength": 24,
             "maxLength": 24
-          },
-          "notes": {
-            "type": "string",
-            "description": "Additional notes",
-            "example": "Customer requested specific attention"
           }
         },
         "required": [
@@ -2040,7 +2018,6 @@
           "status",
           "timezone",
           "amount",
-          "dueDate",
           "paymentMethodId"
         ]
       },
@@ -2330,24 +2307,10 @@
             "type": "string",
             "description": "Name of the payment method",
             "example": "Credit Card"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Whether the payment method is active",
-            "example": true,
-            "default": true
-          },
-          "displayOrder": {
-            "type": "number",
-            "description": "Display order of the payment method",
-            "example": 1,
-            "default": 0
           }
         },
         "required": [
-          "name",
-          "isActive",
-          "displayOrder"
+          "name"
         ]
       },
       "PaymentMethod": {
@@ -2361,16 +2324,6 @@
             "type": "string",
             "description": "Name of the payment method",
             "example": "Credit Card"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Whether the payment method is active",
-            "example": true
-          },
-          "displayOrder": {
-            "type": "number",
-            "description": "Display order of the payment method",
-            "example": 1
           }
         }
       }

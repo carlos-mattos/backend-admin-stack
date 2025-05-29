@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Patch } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AccountsReceivableService } from './accounts-receivable.service';
 import { CreateAccountReceivableDto } from './dto/create-account-receivable.dto';
@@ -45,7 +45,7 @@ export class AccountsReceivableController {
     return this.accountsReceivableService.create(createAccountReceivableDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update an account receivable' })
   @ApiParam({ name: 'id', description: 'Account receivable ID' })
   @ApiResponse({ 

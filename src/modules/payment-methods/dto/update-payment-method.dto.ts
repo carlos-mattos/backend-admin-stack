@@ -10,23 +10,4 @@ export class UpdatePaymentMethodDto {
   @IsOptional()
   @IsString()
   name?: string;
-
-  @ApiProperty({
-    description: 'Whether the payment method is active',
-    example: true,
-    required: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
-
-  @ApiProperty({
-    description: 'Display order of the payment method',
-    example: 1,
-    required: false,
-  })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  displayOrder?: number;
 } 

@@ -54,16 +54,7 @@ export class AppointmentsService {
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
     await this.validateAppointment(createAppointmentDto);
-    const startDate = this.convertToDate(
-      createAppointmentDto.startDate,
-      createAppointmentDto.startTime,
-      createAppointmentDto.timezone,
-    );
-    const endDate = this.convertToDate(
-      createAppointmentDto.endDate,
-      createAppointmentDto.endTime,
-      createAppointmentDto.timezone,
-    );
+
     await this.checkAvailability(
       {
         professional: createAppointmentDto.professional,
@@ -88,11 +79,9 @@ export class AppointmentsService {
       timezone: createAppointmentDto.timezone,
       status: createAppointmentDto.status,
       amount: createAppointmentDto.amount,
-      dueDate: createAppointmentDto.dueDate,
       paymentMethodId: createAppointmentDto.paymentMethodId
         ? new Types.ObjectId(createAppointmentDto.paymentMethodId)
         : undefined,
-      notes: createAppointmentDto.notes,
     });
 
     return createdAppointment.save();
@@ -133,22 +122,16 @@ export class AppointmentsService {
       timezone: createAppointmentFinanceDto.timezone,
       status: AppointmentStatus.SCHEDULED,
       amount: createAppointmentFinanceDto.amount,
-      dueDate: createAppointmentFinanceDto.dueDate,
       paymentMethodId: createAppointmentFinanceDto.paymentMethodId
         ? new Types.ObjectId(createAppointmentFinanceDto.paymentMethodId)
         : undefined,
-      notes: createAppointmentFinanceDto.notes,
     });
 
     const savedAppointment = await createdAppointment.save();
 
     const accountReceivable = new this.accountReceivableModel({
       amount: createAppointmentFinanceDto.amount,
-      dueDate: createAppointmentFinanceDto.dueDate,
       customerId: new Types.ObjectId(createAppointmentFinanceDto.customer),
-      paymentMethodId: new Types.ObjectId(
-        createAppointmentFinanceDto.paymentMethodId,
-      ),
       status: AccountReceivableStatus.PENDING,
       appointmentId: savedAppointment._id,
     });
@@ -250,12 +233,6 @@ export class AppointmentsService {
     checkAvailabilityDto: CheckAvailabilityDto,
     throwOnUnavailable = false,
   ): Promise<CheckAvailabilityResponse> {
-    console.log(
-      'checkAvailability called with:',
-      checkAvailabilityDto,
-      'throwOnUnavailable:',
-      throwOnUnavailable,
-    );
     const {
       professional,
       startDate,
@@ -266,13 +243,11 @@ export class AppointmentsService {
       excludeId,
     } = checkAvailabilityDto;
 
-    console.log('Checking if professional exists:', professional);
     const professionalExists = await this.professionalModel.findById(
       new Types.ObjectId(professional),
     );
 
     if (!professionalExists) {
-      console.log('Professional not found:', professional);
       if (throwOnUnavailable)
         throw new NotFoundException('Professional not found');
       return {
@@ -284,7 +259,6 @@ export class AppointmentsService {
 
     const appointmentStart = this.convertToDate(startDate, startTime, timezone);
     const appointmentEnd = this.convertToDate(endDate, endTime, timezone);
-    console.log('Appointment start:', appointmentStart, 'end:', appointmentEnd);
 
     const coveringSchedule = await this.scheduleModel.findOne({
       professional: new Types.ObjectId(professional),
@@ -295,10 +269,7 @@ export class AppointmentsService {
       endTime: { $gte: endTime },
     });
 
-    console.log('Covering schedule:', coveringSchedule);
-
     if (!coveringSchedule) {
-      console.log('No covering schedule found');
       if (throwOnUnavailable)
         throw new BadRequestException(
           'O profissional não possui agenda para o horário solicitado.',
@@ -321,8 +292,6 @@ export class AppointmentsService {
       })
       .lean();
 
-    console.log('Conflicting appointments:', conflicts);
-
     function intervalsOverlap(
       startA: string,
       endA: string,
@@ -336,12 +305,9 @@ export class AppointmentsService {
       intervalsOverlap(app.startTime, app.endTime, startTime, endTime),
     );
 
-    console.log('Overlapping appointments:', overlapping);
-
     if (overlapping.length > 0) {
       const searchEnd = new Date(appointmentStart);
       searchEnd.setDate(searchEnd.getDate() + 30);
-      console.log('Searching for next available slot until:', searchEnd);
 
       const schedules = await this.scheduleModel
         .find({
@@ -355,8 +321,6 @@ export class AppointmentsService {
         .sort({ startDate: 1 })
         .lean();
 
-      console.log('Schedules found:', schedules);
-
       const appointments = await this.appointmentModel
         .find({
           professionalId: new Types.ObjectId(professional),
@@ -369,8 +333,6 @@ export class AppointmentsService {
         .sort({ startDate: 1 })
         .lean();
 
-      console.log('Appointments in search window:', appointments);
-
       let nextAvailableSlot:
         | {
             startDate: string;
@@ -380,7 +342,6 @@ export class AppointmentsService {
           }
         | undefined = undefined;
       const durationMs = appointmentEnd.getTime() - appointmentStart.getTime();
-      console.log('Duration (ms):', durationMs);
 
       for (const schedule of schedules) {
         let freeSlots: { start: Date; end: Date }[] = [
@@ -391,7 +352,6 @@ export class AppointmentsService {
             end: new Date(schedule.endDate + 'T' + schedule.endTime + ':00'),
           },
         ];
-        console.log('Initial freeSlots:', freeSlots);
 
         const scheduleAppointments = appointments.filter(
           (app) =>
@@ -404,7 +364,6 @@ export class AppointmentsService {
               schedule.endTime,
             ),
         );
-        console.log('Appointments in this schedule:', scheduleAppointments);
 
         for (const app of scheduleAppointments) {
           const appStart = new Date(
@@ -425,7 +384,6 @@ export class AppointmentsService {
             return slots;
           });
         }
-        console.log('Free slots after subtracting appointments:', freeSlots);
 
         freeSlots = freeSlots.filter(
           (slot) => slot.end.getTime() - slot.start.getTime() >= durationMs,
@@ -435,7 +393,6 @@ export class AppointmentsService {
             Math.abs(a.start.getTime() - appointmentStart.getTime()) -
             Math.abs(b.start.getTime() - appointmentStart.getTime()),
         );
-        console.log('Filtered and sorted freeSlots:', freeSlots);
 
         if (freeSlots.length > 0) {
           const found = freeSlots[0];
@@ -447,7 +404,7 @@ export class AppointmentsService {
             endDate: slotEnd.toISOString().slice(0, 10),
             endTime: slotEnd.toTimeString().slice(0, 5),
           };
-          console.log('Next available slot found:', nextAvailableSlot);
+
           break;
         }
       }
@@ -456,11 +413,7 @@ export class AppointmentsService {
         throw new BadRequestException(
           'Professional is not available at this time',
         );
-      console.log(
-        'Returning unavailable with conflicts and nextAvailableSlot:',
-        overlapping,
-        nextAvailableSlot,
-      );
+
       return {
         available: false,
         conflicts: {
@@ -477,7 +430,6 @@ export class AppointmentsService {
       };
     }
 
-    console.log('No conflicts found, returning available: true');
     return { available: true };
   }
 

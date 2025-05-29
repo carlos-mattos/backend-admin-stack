@@ -15,14 +15,17 @@ export class AccountReceivable {
   @Prop({ required: true, type: Number })
   amount: number;
 
-  @Prop({ required: true, type: Date })
-  dueDate: Date;
+  @Prop({ required: false, type: Date })
+  dueDate?: Date;
 
   @Prop({ required: true, type: Types.ObjectId, ref: 'Customer' })
   customerId: Types.ObjectId;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: 'PaymentMethod' })
+  @Prop({ required: false, type: Types.ObjectId, ref: 'PaymentMethod' })
   paymentMethodId: Types.ObjectId;
+
+  @Prop({ required: false, type: Types.ObjectId, ref: 'Appointment' })
+  appointmentId?: Types.ObjectId;
 
   @Prop({ required: true, enum: PaymentStatus, default: PaymentStatus.PENDING })
   status: PaymentStatus;

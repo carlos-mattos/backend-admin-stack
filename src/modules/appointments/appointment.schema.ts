@@ -57,14 +57,8 @@ export class Appointment {
   @Prop({ type: Number })
   amount?: number;
 
-  @Prop({ type: Date })
-  dueDate?: Date;
-
   @Prop({ type: Types.ObjectId, ref: 'PaymentMethod' })
   paymentMethodId?: Types.ObjectId;
-
-  @Prop({ type: String })
-  notes?: string;
 
   @Prop({ type: Types.ObjectId, ref: 'AccountReceivable', required: false })
   accountReceivableId?: Types.ObjectId;

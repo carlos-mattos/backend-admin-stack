@@ -21,7 +21,7 @@ export class AccountsReceivableService {
 
   async findOne(id: string): Promise<AccountReceivableDocument> {
     const accountReceivable = await this.accountReceivableModel
-      .findById(id)
+      .findById(new Types.ObjectId(id))
       .exec();
     if (!accountReceivable) {
       throw new NotFoundException(`Account receivable with ID ${id} not found`);
@@ -34,6 +34,8 @@ export class AccountsReceivableService {
   ): Promise<AccountReceivableDocument> {
     const createdAccountReceivable = new this.accountReceivableModel({
       ...createAccountReceivableDto,
+      paymentMethodId: new Types.ObjectId(createAccountReceivableDto.paymentMethodId),
+      appointmentId: new Types.ObjectId(createAccountReceivableDto.appointmentId),
       customerId: new Types.ObjectId(createAccountReceivableDto.customerId),
     });
     return createdAccountReceivable.save();
@@ -51,7 +53,7 @@ export class AccountsReceivableService {
     }
 
     const updatedAccountReceivable = await this.accountReceivableModel
-      .findByIdAndUpdate(id, updateData, { new: true })
+      .findByIdAndUpdate(new Types.ObjectId(id), updateData, { new: true })
       .exec();
 
     if (!updatedAccountReceivable) {

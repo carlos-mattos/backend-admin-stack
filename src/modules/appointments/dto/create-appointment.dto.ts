@@ -127,16 +127,6 @@ export class CreateAppointmentDto {
   amount?: number;
 
   @ApiProperty({
-    description: 'Due date for payment',
-    example: '2024-03-20T14:30:00Z',
-    required: false,
-  })
-  @IsOptional()
-  @Type(() => Date)
-  @IsDate()
-  dueDate?: Date;
-
-  @ApiProperty({
     description: 'Payment method ID',
     example: '507f1f77bcf86cd799439014',
     minLength: 24,
@@ -146,13 +136,4 @@ export class CreateAppointmentDto {
   @IsOptional()
   @IsMongoId()
   paymentMethodId?: string;
-
-  @ApiProperty({
-    description: 'Additional notes',
-    example: 'Customer requested specific attention',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  notes?: string;
 }
