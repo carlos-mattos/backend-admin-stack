@@ -1,20 +1,20 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsMongoId,
   IsNotEmpty,
-  IsOptional,
   IsString,
   IsDate,
-  IsEnum,
   IsNumber,
+  IsEnum,
+  IsMongoId,
   Min,
   Max,
+  IsOptional,
   IsArray,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { AppointmentStatus } from '../enums/appointment-status.enum';
 
-export class CreateAppointmentDto {
+export class CreateAppointmentFinanceDto {
   @ApiProperty({
     description: 'Title of the appointment',
     example: 'Teste Um',
@@ -36,11 +36,10 @@ export class CreateAppointmentDto {
     example: '507f1f77bcf86cd799439012',
     minLength: 24,
     maxLength: 24,
-    required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsMongoId()
-  customer?: string;
+  customer: string;
 
   @ApiProperty({
     description: 'Professional ID',
@@ -56,12 +55,11 @@ export class CreateAppointmentDto {
     description: 'Service IDs',
     example: ['507f1f77bcf86cd799439013'],
     type: [String],
-    required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsArray()
   @IsMongoId({ each: true })
-  services?: string[];
+  services: string[];
 
   @ApiProperty({
     description: 'Start date in YYYY-MM-DD format',
@@ -118,22 +116,20 @@ export class CreateAppointmentDto {
     example: 150.0,
     minimum: 0,
     maximum: 999999.99,
-    required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @Min(0)
   @Max(999999.99)
-  amount?: number;
+  amount: number;
 
   @ApiProperty({
     description: 'Payment method ID',
     example: '507f1f77bcf86cd799439014',
     minLength: 24,
     maxLength: 24,
-    required: false,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsMongoId()
-  paymentMethodId?: string;
+  paymentMethodId: string;
 }

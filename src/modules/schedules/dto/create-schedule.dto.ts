@@ -19,17 +19,17 @@ export class CreateScheduleDto {
 
   @ApiProperty({
     description: 'Start date of the schedule',
-    example: '2024-03-20T09:00:00Z',
+    example: '2024-03-20',
   })
-  @IsDate()
-  startDate: Date;
+  @IsString()
+  startDate: string;
 
   @ApiProperty({
     description: 'End date of the schedule',
-    example: '2024-03-20T17:00:00Z',
+    example: '2024-03-20',
   })
-  @IsDate()
-  endDate: Date;
+  @IsString()
+  endDate: string;
 
   @ApiProperty({
     description: 'Start time in HH:mm format',

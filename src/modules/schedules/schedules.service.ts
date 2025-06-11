@@ -1,23 +1,23 @@
 import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
   ConflictException,
   Inject,
+  Injectable,
+  NotFoundException,
   forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { AppointmentsService } from '../appointments/appointments.service';
+import { AppointmentStatus } from '../appointments/enums/appointment-status.enum';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import {
+  RecurrenceType,
   Schedule,
   ScheduleDocument,
   ScheduleStatus,
-  RecurrenceType,
 } from './schedule.schema';
-import { AppointmentsService } from '../appointments/appointments.service';
 
 type EventData = Omit<
   CreateScheduleDto,
@@ -44,18 +44,16 @@ export class SchedulesService {
     const newScheduleData: CreateScheduleDto = {
       professional: String(baseSchedule.professional),
       startDate: updateData?.startDate
-        ? new Date(updateData.startDate)
+        ? updateData.startDate
         : baseSchedule.startDate,
-      endDate: updateData?.endDate
-        ? new Date(updateData.endDate)
-        : baseSchedule.endDate,
+      endDate: updateData?.endDate ? updateData.endDate : baseSchedule.endDate,
       startTime: updateData?.startTime ?? baseSchedule.startTime,
       endTime: updateData?.endTime ?? baseSchedule.endTime,
       timezone: updateData?.timezone ?? baseSchedule.timezone,
       status: updateData?.status ?? baseSchedule.status,
       recurrence: updateData?.recurrence ?? baseSchedule.recurrence,
       repeatUntil: updateData?.repeatUntil
-        ? new Date(updateData.repeatUntil)
+        ? updateData.repeatUntil
         : baseSchedule.repeatUntil,
       customRecurrenceDays:
         updateData?.customRecurrenceDays ?? baseSchedule.customRecurrenceDays,
@@ -71,15 +69,15 @@ export class SchedulesService {
     const enforcedRecurrence =
       createScheduleDto.recurrence ?? RecurrenceType.NONE;
 
-    const startDate = new Date(createScheduleDto.startDate);
-    const endDate = new Date(createScheduleDto.endDate);
+    const startDate = createScheduleDto.startDate;
+    const endDate = createScheduleDto.endDate;
 
     const seriesId = uuidv4();
 
     const repeatUntil =
       enforcedRecurrence !== RecurrenceType.NONE &&
       createScheduleDto.repeatUntil
-        ? new Date(createScheduleDto.repeatUntil)
+        ? createScheduleDto.repeatUntil
         : null;
 
     if (!repeatUntil) {
@@ -89,35 +87,22 @@ export class SchedulesService {
         recurrence: enforcedRecurrence,
         seriesId,
         professional: new Types.ObjectId(createScheduleDto.professional),
+        startDate,
+        endDate,
       });
       const savedDoc = await singleEvent.save();
       return [savedDoc];
     }
 
     const buildEvent = (currentDay: Date): EventData => {
-      const newStart = new Date(currentDay);
-      newStart.setHours(
-        startDate.getHours(),
-        startDate.getMinutes(),
-        startDate.getSeconds(),
-        0,
-      );
-
-      const newEnd = new Date(currentDay);
-      newEnd.setHours(
-        endDate.getHours(),
-        endDate.getMinutes(),
-        endDate.getSeconds(),
-        0,
-      );
-
+      const dateStr = currentDay.toISOString().slice(0, 10);
       return {
         ...createScheduleDto,
         status: enforcedStatus,
         recurrence: enforcedRecurrence,
         seriesId,
-        startDate: newStart,
-        endDate: newEnd,
+        startDate: dateStr,
+        endDate: dateStr,
         professional: new Types.ObjectId(createScheduleDto.professional),
       };
     };
@@ -142,26 +127,36 @@ export class SchedulesService {
         (day) => dayMapping[day.toLowerCase()],
       );
 
-      let currentDay = new Date(startDate);
+      let cursor = new Date(startDate + 'T00:00:00');
+      cursor.setHours(0, 0, 0, 0);
+      const until = repeatUntil
+        ? new Date(repeatUntil + 'T00:00:00')
+        : new Date(startDate + 'T00:00:00');
+      until.setHours(0, 0, 0, 0);
 
-      while (currentDay <= repeatUntil) {
-        if (customDaysNumbers.includes(currentDay.getDay())) {
-          events.push(buildEvent(currentDay));
+      while (cursor <= until) {
+        if (customDaysNumbers.includes(cursor.getDay())) {
+          events.push(buildEvent(cursor));
         }
-        currentDay.setDate(currentDay.getDate() + 1);
+        cursor.setDate(cursor.getDate() + 1);
       }
     } else {
-      let currentDay = new Date(startDate);
+      let cursor = new Date(startDate + 'T00:00:00');
+      cursor.setHours(0, 0, 0, 0);
+      const until = repeatUntil
+        ? new Date(repeatUntil + 'T00:00:00')
+        : new Date(startDate + 'T00:00:00');
+      until.setHours(0, 0, 0, 0);
 
-      while (currentDay <= repeatUntil) {
-        events.push(buildEvent(currentDay));
+      while (cursor <= until) {
+        events.push(buildEvent(cursor));
 
         if (enforcedRecurrence === 'daily') {
-          currentDay.setDate(currentDay.getDate() + 1);
+          cursor.setDate(cursor.getDate() + 1);
         } else if (enforcedRecurrence === 'weekly') {
-          currentDay.setDate(currentDay.getDate() + 7);
+          cursor.setDate(cursor.getDate() + 7);
         } else if (enforcedRecurrence === 'monthly') {
-          currentDay.setMonth(currentDay.getMonth() + 1);
+          cursor.setMonth(cursor.getMonth() + 1);
         } else {
           break;
         }
@@ -195,15 +190,16 @@ export class SchedulesService {
       throw new NotFoundException(`Schedule with ID ${id} not found`);
     }
 
-    // Check for existing appointments
     const appointments = await this.appointmentsService.findByProfessional(
       String(baseSchedule.professional),
     );
-    const futureAppointments = appointments.filter(
-      (appointment) =>
-        new Date(appointment.startDate) >= baseSchedule.startDate &&
-        appointment.status !== 'cancelled',
-    );
+    const futureAppointments = appointments.filter((appointment) => {
+      const baseStart = new Date(baseSchedule.startDate + 'T00:00:00');
+      return (
+        new Date(appointment.startDate) >= baseStart &&
+        appointment.status !== AppointmentStatus.CANCELLED
+      );
+    });
 
     if (futureAppointments.length > 0) {
       throw new ConflictException(
@@ -211,15 +207,11 @@ export class SchedulesService {
       );
     }
 
-    // Delete all schedules in the series
     const query = {
       seriesId: baseSchedule.seriesId,
       professional: baseSchedule.professional,
     };
 
-    const deleteResult = await this.scheduleModel.deleteMany(query).exec();
-
-    // Create new series of schedules
     const newSchedules = await this.recreateScheduleSeries(
       baseSchedule,
       updateScheduleDto,
@@ -234,15 +226,16 @@ export class SchedulesService {
       throw new NotFoundException(`Schedule with ID ${id} not found`);
     }
 
-    // Check for existing appointments
     const appointments = await this.appointmentsService.findByProfessional(
       String(baseSchedule.professional),
     );
-    const futureAppointments = appointments.filter(
-      (appointment) =>
-        new Date(appointment.startDate) >= baseSchedule.startDate &&
-        appointment.status !== 'cancelled',
-    );
+    const futureAppointments = appointments.filter((appointment) => {
+      const baseStart = new Date(baseSchedule.startDate + 'T00:00:00');
+      return (
+        new Date(appointment.startDate) >= baseStart &&
+        appointment.status !== AppointmentStatus.CANCELLED
+      );
+    });
 
     if (futureAppointments.length > 0) {
       throw new ConflictException(
@@ -250,12 +243,7 @@ export class SchedulesService {
       );
     }
 
-    // Delete all schedules in the series
-    const query = {
-      seriesId: baseSchedule.seriesId,
-      professional: baseSchedule.professional,
-    };
-    await this.scheduleModel.deleteMany(query).exec();
+    await this.scheduleModel.findByIdAndDelete(id).exec();
 
     return baseSchedule;
   }
@@ -275,11 +263,11 @@ export class SchedulesService {
     }
 
     if (filters?.startDate) {
-      query.startDate = { $gte: new Date(filters.startDate) };
+      query.startDate = { $gte: filters.startDate };
     }
 
     if (filters?.endDate) {
-      query.endDate = { $lte: new Date(filters.endDate) };
+      query.endDate = { $lte: filters.endDate };
     }
 
     return this.scheduleModel
